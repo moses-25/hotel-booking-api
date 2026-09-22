@@ -1,0 +1,28 @@
+{
+  "name": "hotel-booking-api",
+  "version": "0.0.1",
+  "description": "secure role-based Hotel Booking API",
+  "main": "src/api.js",
+  "scripts": {
+    "test": "(https://github.com/moses-25/hotel-booking-api.git)"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/moses-25/hotel-booking-api.git"
+  },
+  "keywords": [
+    "JWT",
+    "Express.js",
+    "Socket.io",
+    "PostgreSQL"
+  ],
+  "author": "Moses Otieno <moses-25>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/moses-25/hotel-booking-api/issues"
+  },
+  "homepage": "https://github.com/moses-25/hotel-booking-api#readme",
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}
