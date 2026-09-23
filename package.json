@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "secure role-based Hotel Booking API",
   "main": "src/api.js",
+  "type": "module",
   "scripts": {
     "test": "(https://github.com/moses-25/hotel-booking-api.git)"
   },
