@@ -4,11 +4,12 @@
   "description": "secure role-based Hotel Booking API",
   "main": "src/api.js",
   "type": "module",
-  "scripts": {
+"scripts": {
     "start": "node src/api.js",
     "dev": "nodemon src/api.js",
     "dev-dep": "npm install && npm install nodemon morgan eslint eslint-config-prettier eslint-plugin-prettier prettier --save-dev -D",
-    "test": "(https://github.com/moses-25/hotel-booking-api.git)"
+    "env-var": "cp ./env/.envexample ./.env && echo \"Environment variables injected\"",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
@@ -28,6 +29,7 @@
   "homepage": "https://github.com/moses-25/hotel-booking-api#readme",
   "dependencies": {
     "cors": "^2.8.6",
+    "dotenv": "^18.0.3",
     "express": "^5.2.1"
   },
   "devDependencies": {
