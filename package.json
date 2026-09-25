@@ -4,7 +4,7 @@
   "description": "secure role-based Hotel Booking API",
   "main": "src/api.js",
   "type": "module",
-"scripts": {
+  "scripts": {
     "start": "node src/api.js",
     "dev": "nodemon src/api.js",
     "dev-dep": "npm install && npm install nodemon morgan eslint eslint-config-prettier eslint-plugin-prettier prettier --save-dev -D",
@@ -30,7 +30,11 @@
   "dependencies": {
     "cors": "^2.8.6",
     "dotenv": "^18.0.3",
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "pg": "^8.23.0",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.37.8",
+    "sequelize-cli": "^6.6.5"
   },
   "devDependencies": {
     "eslint": "^10.11.0",
