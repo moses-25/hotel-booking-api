@@ -1,19 +1,19 @@
 // Import necessary modules and dependencies
 // Express framework for creating the api
-import express from 'express';
+import express from "express";
 // function to manage files and directories since the node.js api
-import path from 'path';
+import path from "path";
 // function to have access to the directory or file path
-import { fileURLToPath } from 'url';
+import { fileURLToPath } from "url";
 // Middleware to handle body request
-import bodyParser from 'body-parser';
+import bodyParser from "body-parser";
 // Middleware to cross origins request
-import cors from 'cors';
+import cors from "cors";
 // Middleware for logging HTTP requests
-import morgan from 'morgan';
-// import the IP address and port from the network configuration.module
-import { theIPAddress, port } from './libraries/netconfig.js';
-
+import morgan from "morgan";
+// import the IP address and port from the network
+import { testConnection } from './libraries/DBConnection.js';
+import { theIPAddress, port } from "./libraries/netconfig.js";
 
 // Create the API with Express.js
 const api = express();
@@ -23,7 +23,7 @@ const api = express();
 // -----------------------------------------------------------------------------
 
 // HTTP request logger middleware
-api.use(morgan('dev'));
+api.use(morgan("dev"));
 
 // Middleware to parse URL-encoded data
 api.use(express.urlencoded({ extended: false }));
@@ -36,8 +36,8 @@ api.use(bodyParser.json());
 // Store in the constant the project dirname
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-api.get('/', (req, res) => {
-  res.send("IP address and port working ")
+api.get("/", (req, res) => {
+  res.send("IP address and port working ");
 });
 
 // Immediately invoked Function Expression (IIFE) to run the server
@@ -48,6 +48,10 @@ api.get('/', (req, res) => {
     console.log(`API is listening on ${theIPAddress}:${port}`);
   });
 })();
+
+//.Test dabase connection
+// call the funcy
+testConnection();
 
 // Export the API for the use in other files
 export default api;
