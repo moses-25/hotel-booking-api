@@ -4,12 +4,12 @@ import { sequelize } from '../../libraries/DBConnection.js';
 import { DataTypes } from 'sequelize';
 
 // Define the name of the user status table
-export const STATUS_TABLE = 'user_status';
+export const USER_STATUS_TABLE = 'user_status';
 
 // Define the status model
-export const Status = sequelize.define(
+export const UserStatus = sequelize.define(
   // Table name
-  STATUS_TABLE,
+  USER_STATUS_TABLE,
   // Table columns
   {
     // Define the 'id' column
@@ -25,7 +25,7 @@ export const Status = sequelize.define(
       // Auto increment value
       autoIncrement: true,
     },
-    // Role name (e.g. 'Active', 'Inactive', 'deleted')
+    // Role name (e.g. 'ACTIVE', 'INACTIVE', 'DELETED')
     name: {
       // Varchar type limited to 30 characters
       type: DataTypes.STRING(30),
@@ -42,6 +42,8 @@ export const Status = sequelize.define(
       allowNull: false,
       // By default automatically generate the value
       defaultValue: DataTypes.NOW,
+      // Database column name
+      field: 'created_at',
     },
     // Last update date
     updatedAt: {
@@ -51,6 +53,8 @@ export const Status = sequelize.define(
       allowNull: false,
       // By default automatically generate the value
       defaultValue: DataTypes.NOW,
+      // Database column name
+      field: 'updated_at',
     },
   },
   // Sequelize table configuration
@@ -58,7 +62,7 @@ export const Status = sequelize.define(
     // Pass the sequelize instance
     sequelize,
     // Specify the table name
-    tableName: STATUS_TABLE,
+    tableName: USER_STATUS_TABLE,
     // Specify the model name
     modelName: 'user_status',
     // Enable automatic timestamps

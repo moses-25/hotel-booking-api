@@ -7,7 +7,7 @@ import { DataTypes } from 'sequelize';
 export const  ROOM_TYPE_TABLE = 'room_type';
 
 // Define the user model
-export const roomType = sequelize.define(
+export const RoomType = sequelize.define(
   // Table name
   ROOM_TYPE_TABLE,
   // Table columns
