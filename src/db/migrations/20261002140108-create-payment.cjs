@@ -3,65 +3,64 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    // UP - create the 'user' table
+    // UP - create the 'payment' table\
     await queryInterface.createTable(
-      'user',
+      'payment',
       {
         id: {
-          type: Sequelize.INTEGER,
+          type: DataTypes.INTEGER,
           allowNull: false,
           primaryKey: true,
           unique: true,
           autoIncrement: true,
         },
-        first_name: {
-          type: Sequelize.STRING(50),
-          allowNull: false,
-        },
-        middle_name: {
-          type: Sequelize.STRING(50),
-          allowNull: true,
-        },
-        first_lastname: {
-          type: Sequelize.STRING(50),
-          allowNull: false,
-        },
-        second_lastname: {
-          type: Sequelize.STRING(50),
-          allowNull: true,
-        },
-        email: {
-          type: Sequelize.STRING(100),
-          allowNull: false,
-          unique: true,
-        },
-        password: {
-          type: Sequelize.STRING(100),
-          allowNull: false,
-        },
-        role: {
-          type: Sequelize.INTEGER,
+        booking: {
+          type: DataTypes.INTEGER,
           allowNull: false,
           references: {
-            model: 'user_role',
+            model: 'booking',
+            key: 'id',
+          },
+          onDelete: 'RESTRICT',
+          onUpdate: 'CASCADE',
+        },
+        amount: {
+          type: DataTypes.DECIMAL(10, 2),
+          allowNull: false,
+        },
+        method: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          references: {
+            model: 'payment_method',
             key: 'id',
           },
           onDelete: 'RESTRICT',
           onUpdate: 'CASCADE',
         },
         status: {
-          type: Sequelize.INTEGER,
+          type: DataTypes.INTEGER,
           allowNull: false,
           references: {
-            model: 'user_status',
+            model: 'payment_status',
             key: 'id',
           },
           onDelete: 'RESTRICT',
           onUpdate: 'CASCADE',
         },
-        last_login: {
-          type: Sequelize.DATE,
+        paid_at: {
+          type: DataTypes.DATE,
           allowNull: false,
+        },
+        processed_by: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          references: {
+            model: 'user',
+            key: 'id',
+          },
+          onDelete: 'RESTRICT',
+          onUpdate: 'CASCADE',
         },
         created_at: {
           type: Sequelize.DATE,
@@ -75,10 +74,15 @@ module.exports = {
         },
       }
     );
+
+    // CHECK constraint: amount must be >= 0
+    await queryInterface.sequelize.query(
+      'ALTER TABLE "payment" ADD CONSTRAINT "chk_payment_amount" CHECK ("amount" >= 0)'
+    );
   },
 
   async down(queryInterface, Sequelize) {
-    // DOWN - Drop the 'user' table
-    await queryInterface.dropTable('user');
+    // DOWN - drop the 'payment' table
+    await queryInterface.createTable('payment');
   }
 };
