@@ -1,4 +1,4 @@
-use strict';
+"use strict";
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -9,7 +9,7 @@ module.exports = {
         ('Debit card',      NOW(), NOW()),
         ('Cash',            NOW(), NOW()),
         ('Bank transfer',   NOW(), NOW()),
-        ('Paypal',          NOW(), NOW())
+        ('PayPal',          NOW(), NOW())
       ON CONFLICT (name) DO NOTHING;
     `);
   },
@@ -21,7 +21,7 @@ module.exports = {
         'Debit card',
         'Cash',
         'Bank transfer',
-        'Paypal'
+        'PayPal'
       ],
     });
   },

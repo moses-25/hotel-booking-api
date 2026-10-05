@@ -10,7 +10,7 @@ module.exports = {
         ('Checked-in',   NOW(), NOW()),
         ('Checked-out',  NOW(), NOW()),
         ('Cancelled',    NOW(), NOW()),
-        ('Now show',     NOW(), NOW())
+        ('No show',      NOW(), NOW())
       ON CONFLICT (name) DO NOTHING;
     `);
   },
@@ -23,7 +23,7 @@ module.exports = {
         "Checked-in",
         "Checked-out",
         "Cancelled",
-        "Now show",
+        "No show",
       ],
     });
   },
