@@ -1,13 +1,13 @@
 // Import the Sequelize instance from the database connection library
-import { sequelize } from '../../libraries/DBConnection.js';
+import { sequelize } from "../../libraries/DBConnection.js";
 // Import DataTypes from sequelize to define column types
-import { DataTypes } from 'sequelize';
+import { DataTypes } from "sequelize";
 
 // Define the name of the user roles table
-export const ROLE_TABLE = 'user_role';
+export const ROLE_TABLE = "user_role";
 
 // Define the role model
-export const Role = sequelize.define(
+export const userRole = sequelize.define(
   // Table name
   ROLE_TABLE,
   // Table columns
@@ -43,7 +43,7 @@ export const Role = sequelize.define(
       // By default automatically generate the value
       defaultValue: DataTypes.NOW,
       // Database column name
-      field: 'created_at',
+      field: "created_at",
     },
     // Last update date
     updatedAt: {
@@ -54,7 +54,7 @@ export const Role = sequelize.define(
       // By default automatically generate the value
       defaultValue: DataTypes.NOW,
       // Database column name
-      field: 'updated_at',
+      field: "updated_at",
     },
   },
   // Sequelize table configuration
@@ -64,8 +64,8 @@ export const Role = sequelize.define(
     // Specify the table name
     tableName: ROLE_TABLE,
     // Specify the model name
-    modelName: 'user_role',
+    modelName: "user_role",
     // Enable automatic timestamps
     timestamps: true,
-  }
+  },
 );
