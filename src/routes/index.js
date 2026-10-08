@@ -2,7 +2,7 @@
 import { Router } from "express";
 
 // Import the Services Routes for handle services related-routes
-import userRouter from "./userRouter";
+import userRouter from "./userRouter.js";
 
 // Function to set up API routes
 const routerAPI = (api) => {
