@@ -5,7 +5,14 @@ import { Router } from "express";
 // -------------------------- Validator Schema ---------------------------------
 
 // ----------------------------- Controllers -----------------------------------
-import { createOneUser, updateOneUser } from "../controllers/user/index.js";
+import {
+  createOneUser,
+  updateOneUser,
+  updateUserPhones,
+  updateLastLoginUser,
+  deleteOneUser,
+  listOneUser
+} from '../controllers/user/index.js';
 
 // Create a new Router instance dedicated to the user resource
 const userRouter = Router();
@@ -14,12 +21,54 @@ const userRouter = Router();
 // POST /create → Create a new user
 // Body: New user data
 // -----------------------------------------------------------------------------
-userRouter.post("/create", createOneUser);
+userRouter.post(
+  '/create',
+  createOneUser
+);
 
 // -----------------------------------------------------------------------------
-// PUT /update → Update an user
+// PUT /update → Update a user
 // Body: User identifier and new user data
 // -----------------------------------------------------------------------------
-userRouter.put("/update", updateOneUser);
+userRouter.put(
+  '/update',
+  updateOneUser
+);
+
+// -----------------------------------------------------------------------------
+// PUT /update-phones → Update a user's phone numbers
+// Body: User identifier and the full list of phone numbers
+// -----------------------------------------------------------------------------
+userRouter.put(
+  '/update-phones',
+  updateUserPhones
+);
+
+// -----------------------------------------------------------------------------
+// POST /update-last-login → Update a user's session last login
+// Body: User identifier
+// -----------------------------------------------------------------------------
+userRouter.post(
+  '/update-last-login',
+  updateLastLoginUser
+);
+
+// -----------------------------------------------------------------------------
+// DELETE /delete → Delete a user
+// Body: User identifier
+// -----------------------------------------------------------------------------
+userRouter.delete(
+  '/delete',
+  deleteOneUser
+);
+
+// -----------------------------------------------------------------------------
+// POST /list-one → List a user
+// Body: User identifier
+// -----------------------------------------------------------------------------
+userRouter.post(
+  '/list-one',
+  listOneUser
+);
 
 export default userRouter;
