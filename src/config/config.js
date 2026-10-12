@@ -1,5 +1,5 @@
 // Import dotenv package to load environment variables from a .env file
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 
 // Load environment variables from .env file into process.env
 dotenv.config();
@@ -29,5 +29,5 @@ export const config = {
   // Allowed front-end origin for CORS request
   corsOrigin: process.env.CORS_ORIGIN,
   // Proxy hops in front of the API
-  trustProxyHops: parseInt(process.env.TRUST_PROXY_HOPS ?? '0') || 0,
+  trustProxyHops: parseInt(process.env.TRUST_PROXY_HOPS ?? "0") || 0,
 };
