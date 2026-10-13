@@ -4,6 +4,8 @@ import { Router } from "express";
 
 // Middleware that verifies the API key sent by the client app
 import { checkAPIkey } from "../middlewares/apiAuthHandler.js";
+// Middleware that verifies the user JWT
+import { authAppVerifyToken } from "../middlewares/tokenHandlers/authAppTokenHandler.js";
 // -------------------------- Validator Schema ---------------------------------
 
 // ----------------------------- Controllers -----------------------------------
@@ -29,7 +31,9 @@ userRouter.post(
   "/create",
   // Step 1: Verify the API key
   checkAPIkey,
-  // Step 2: Delegate to the controller
+  // Step 2: Verify the session token
+  authAppVerifyToken,
+  // Step 3: Delegate to the controller
   createOneUser,
 );
 
@@ -41,7 +45,9 @@ userRouter.put(
   "/update",
   // Step 1: Verify the API key
   checkAPIkey,
-  // Step 2: Delegate to the controller
+  // Step 2: Verify the session token
+  authAppVerifyToken,
+  // Step 3: Delegate to the controller
   updateOneUser,
 );
 
@@ -53,7 +59,9 @@ userRouter.put(
   "/update-phones",
   // Step 1: Verify the API key
   checkAPIkey,
-  // Step 2: Delegate to the controller
+  // Step 2: Verify the session token
+  authAppVerifyToken,
+  // Step 3: Delegate to the controller
   updateUserPhones,
 );
 
@@ -65,7 +73,9 @@ userRouter.post(
   "/update-last-login",
   // Step 1: Verify the API key
   checkAPIkey,
-  // Step 2: Delegate to the controller
+  // Step 2: Verify the session token
+  authAppVerifyToken,
+  // Step 3: Delegate to the controller
   updateLastLoginUser,
 );
 
@@ -77,7 +87,9 @@ userRouter.delete(
   "/delete",
   // Step 1: Verify the API key
   checkAPIkey,
-  // Step 2: Delegate to the controller
+  // Step 2: Verify the session token
+  authAppVerifyToken,
+  // Step 3: Delegate to the controller
   deleteOneUser,
 );
 
@@ -89,7 +101,9 @@ userRouter.post(
   "/list-one",
   // Step 1: Verify the API key
   checkAPIkey,
-  // Step 2: Delegate to the controller
+  // Step 2: Verify the session token
+  authAppVerifyToken,
+  // Step 3: Delegate to the controller
   listOneUser,
 );
 
@@ -101,7 +115,9 @@ userRouter.post(
   "/find-by-email",
   // Step 1: Verify the API key
   checkAPIkey,
-  // Step 2: Delegate to the controller
+  // Step 2: Verify the session token
+  authAppVerifyToken,
+  // Step 3: Delegate to the controller
   findByEmailUser,
 );
 
@@ -113,7 +129,9 @@ userRouter.get(
   "/list-all",
   // Step 1: Verify the API key
   checkAPIkey,
-  // Step 2: Delegate to the controller
+  // Step 2: Verify the session token
+  authAppVerifyToken,
+  // Step 3: Delegate to the controller
   listAllUsers,
 );
 

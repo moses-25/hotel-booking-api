@@ -13,7 +13,7 @@ import { config } from "../config/config.js";
  */
 export const checkAPIkey = (req, res, next) => {
   // Extract the API key from the request headers
-  const APIKey = req.headers["APIKey"];
+  const APIKey = req.headers["apikey"];
 
   // Check if the API key matches the expected value
   if (APIKey === config.APIKey) {
