@@ -12,7 +12,7 @@
 // import the user data model
 import { User } from "../db/models/user.js";
 // import the related catalog models needed to embed FK data as nested objects
-import { userRole as UserRole } from "../db/models/userRole.js";
+import { UserRole } from "../db/models/userRole.js";
 import { UserStatus } from "../db/models/userStatus.js";
 // import the child model that stores the user's phone numbers
 import { Phone } from "../db/models/phone.js";
