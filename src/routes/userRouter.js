@@ -6,6 +6,7 @@ import { Router } from "express";
 import { checkAPIkey } from "../middlewares/apiAuthHandler.js";
 // Middleware that verifies the user JWT
 import { authAppVerifyToken } from "../middlewares/tokenHandlers/authAppTokenHandler.js";
+
 // -------------------------- Validator Schema ---------------------------------
 
 // ----------------------------- Controllers -----------------------------------

@@ -3,7 +3,7 @@
 
 // ---------------------------- User domain ------------------------------------
 import { User } from "./user.js";
-import { userRole as UserRole } from "./userRole.js";
+import { UserRole } from "./userRole.js";
 import { UserStatus } from "./userStatus.js";
 import { Phone } from "./phone.js";
 
