@@ -3,6 +3,7 @@ import { Router } from "express";
 
 // Import the Services Routes for handle services related-routes
 import userRouter from "./userRouter.js";
+import authenticationRouter from "./authenticationRouter.js";
 
 // Function to set up API routes
 const routerAPI = (api) => {
@@ -13,6 +14,7 @@ const routerAPI = (api) => {
   api.use("/api/v1", router);
 
   // Catalog of the sub-routes
+  router.use("/auth", authenticationRouter);
   router.use("/users", userRouter);
 };
 

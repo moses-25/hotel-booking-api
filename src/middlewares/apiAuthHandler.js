@@ -16,7 +16,7 @@ export const checkAPIkey = (req, res, next) => {
   const APIKey = req.headers["apikey"];
 
   // Check if the API key matches the expected value
-  if (APIKey === config.APIKey) {
+  if (APIKey === config.APIkey) {
     next(); // Proceed to the next middleware or route handler
   } else {
     // Create an unauthorized error using Boom
