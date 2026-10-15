@@ -38,7 +38,7 @@ export const listOneUser = async (req, res, next) => {
     }
   } catch (err) {
     const boomError = Boom.boomify(err, {
-      message: 'It is not possible to find the user in the database.'
+      message: 'It is not possible to find the user in the database.',
     });
     next(boomError);
   }

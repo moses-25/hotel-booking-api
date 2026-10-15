@@ -4,9 +4,9 @@
  */
 
 // Import Passport for authentication
-import passport from "passport";
+import passport from 'passport';
 // Import the auth-app JWT authentication strategy for JWT authentication
-import { authAppJwtStrategy } from "./authApp/strategies/jwt.strategy.js";
+import { authAppJwtStrategy } from './authApp/strategies/jwt.strategy.js';
 
 /**
  * Configure Passport authentication strategies.

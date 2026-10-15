@@ -17,10 +17,9 @@ export const Payment = sequelize.define(
       unique: true,
       autoIncrement: true,
     },
-    bookingId: {
+    booking: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      field: 'booking_id',
       references: {
         model: 'booking',
         key: 'id',

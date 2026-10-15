@@ -1,8 +1,8 @@
 // Import the jsonwebtoken library to handling JWT operations
-import jwt from "jsonwebtoken";
+import jwt from 'jsonwebtoken';
 
 /**
- * Signs a JSON web Token (JWT) for a user.
+ * Signs a JSON Web Token (JWT) for a user.
  *
  * @param {object} payload
  * - The payload to be included in the token. Typically includes user information.

@@ -1,5 +1,5 @@
-import { UserService } from "../../services/userServices.js";
-import Boom from "@hapi/boom";
+import { UserService } from '../../services/userServices.js';
+import Boom from '@hapi/boom';
 
 /**
  * Controller function to retrieve a single user by its email.
@@ -29,16 +29,16 @@ export const findByEmailUser = async (req, res, next) => {
   try {
     const response = await userManager.findByEmail(email);
 
-    if (response.status === "USER FOUND SUCCESSFULLY") {
+    if (response.status === 'USER FOUND SUCCESSFULLY') {
       return res.status(200).json({
         success: true,
-        message: "User found successfully",
+        message: 'User found successfully',
         user: response.userData,
       });
     }
   } catch (err) {
     const boomError = Boom.boomify(err, {
-      message: "It is not possible to find the user in the database.",
+      message: 'It is not possible to find the user in the database.',
     });
     next(boomError);
   }

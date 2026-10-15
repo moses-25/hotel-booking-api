@@ -1,7 +1,7 @@
 // Import the ValidationError from Sequelize to handle ORM-specific errors
-import { ValidationError } from "sequelize";
+import { ValidationError } from 'sequelize';
 // Import Boom for HTTP-friendly error objects
-import Boom from "@hapi/boom";
+import Boom from '@hapi/boom';
 
 /**
  * Middleware to log errors.
@@ -30,7 +30,7 @@ export const errorHandler = (err, req, res, next) => {
   // Send a 500 Internal Server Error response with error details
   res.status(500).json({
     message: err.message,
-    stack: err.stack,
+    stack: err.stack
   });
 };
 
@@ -72,7 +72,7 @@ export const ORMErrorHandler = (err, req, res, next) => {
     res.status(409).json({
       statusCode: 409,
       message: err.name,
-      errors: err.errors,
+      errors: err.errors
     });
   }
   // Pass the error to the next middleware

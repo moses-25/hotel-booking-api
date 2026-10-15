@@ -1,5 +1,5 @@
 // Import the jsonwebtoken library to handling JWT operations
-import jwt from "jsonwebtoken";
+import jwt from 'jsonwebtoken';
 
 /**
  * Verifies a given JSON Web Token (JWT).

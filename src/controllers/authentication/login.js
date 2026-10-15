@@ -7,8 +7,8 @@
  * unexpected failures to the centralized Express error handler.
  */
 
-import { AuthenticationServices } from "../../services/authenticationServices.js";
-import Boom from "@hapi/boom";
+import { AuthenticationServices } from '../../services/authenticationServices.js';
+import Boom from '@hapi/boom';
 
 /**
  * Authenticates a user and, on success, returns the issued JWT in the
@@ -48,8 +48,8 @@ export const login = async (req, res, next) => {
 
   if (!email || !password) {
     return next(
-      Boom.badRequest("Email and password are required", {
-        code: "MISSING_CREDENTIALS",
+      Boom.badRequest('Email and password are required', {
+        code: 'MISSING_CREDENTIALS',
       }),
     );
   }
@@ -62,31 +62,31 @@ export const login = async (req, res, next) => {
     // Expected auth failure: collapse both case into one response to
     // prevent user enumeration.
     if (
-      response.status === "User not found" ||
-      response.status === "Wrong password"
+      response.status === 'User not found' ||
+      response.status === 'Wrong password'
     ) {
       return res.status(401).json({
         success: false,
-        message: "Invalid credentials try again.",
-        error: "INVALID_CREDENTIALS",
+        message: 'Invalid credentials try again.',
+        error: 'INVALID_CREDENTIALS',
       });
     }
 
     // Valid credentials, but the account is not 'Active'. No token is issued.
-    if (response.status === "Inactive user") {
+    if (response.status === 'Inactive user') {
       return res.status(403).json({
         success: false,
-        message: "This account is inactive. Contact an administrator.",
-        error: "USER_INACTIVE",
+        message: 'This account is inactive. Contact an administrator.',
+        error: 'USER_INACTIVE',
       });
     }
 
     // Authentication successful. The service has already produced the JWT;
     // hand it to the client, which must send it as a Bearer token.
-    if (response.status === "logged") {
+    if (response.status === 'logged') {
       return res.status(200).json({
         success: true,
-        message: "Login successful.",
+        message: 'Login successful.',
         // Same key every other endpoint uses to echo the (rotated) token
         authentication: response.token,
       });
@@ -94,8 +94,8 @@ export const login = async (req, res, next) => {
 
     // Any other status is a contract violation: the service returned
     // something the controller does not know how to handle.
-    throw Boom.internal("Unexpected authentication status", {
-      code: "AUTHENTICATION_ERROR",
+    throw Boom.internal('Unexpected authentication status', {
+      code: 'AUTHENTICATION_ERROR',
       status: response.status,
     });
   } catch (err) {

@@ -1,5 +1,5 @@
-import { UserService } from "../../services/userServices.js";
-import Boom from "@hapi/boom";
+import { UserService } from '../../services/userServices.js';
+import Boom from '@hapi/boom';
 
 /**
  * Controller function to retrieve every user.
@@ -22,17 +22,17 @@ export const listAllUsers = async (req, res, next) => {
   try {
     const response = await userManager.listAll();
 
-    if (response.status === "USERS FOUND SUCCESSFULLY") {
+    if (response.status === 'USERS FOUND SUCCESSFULLY') {
       return res.status(200).json({
         success: true,
-        message: "Users found successfully",
+        message: 'Users found successfully',
         total: response.total,
         users: response.usersData,
       });
     }
   } catch (err) {
     const boomError = Boom.boomify(err, {
-      message: "It is not possible to find all the users in the database.",
+      message: 'It is not possible to find all the users in the database.',
     });
     next(boomError);
   }

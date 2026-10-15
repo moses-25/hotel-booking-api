@@ -1,5 +1,5 @@
 // Import dotenv package to load environment variables from a .env file
-import dotenv from "dotenv";
+import dotenv from 'dotenv';
 
 // Load environment variables from .env file into process.env
 dotenv.config();
@@ -23,11 +23,11 @@ export const config = {
   // Database port
   dbPort: process.env.DB_PORT,
   // API key for the authentication application
-  APIkey: process.env.API_KEY,
+  APIKey: process.env.API_KEY,
   // JWT secret key for the user authentication
   authAppJwtKey: process.env.AUTH_API_JWT_SECRET_KEY,
   // Allowed front-end origin for CORS request
   corsOrigin: process.env.CORS_ORIGIN,
   // Proxy hops in front of the API
-  trustProxyHops: parseInt(process.env.TRUST_PROXY_HOPS ?? "0") || 0,
+  trustProxyHops: parseInt(process.env.TRUST_PROXY_HOPS ?? '0') || 0,
 };

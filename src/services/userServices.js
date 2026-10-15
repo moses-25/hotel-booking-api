@@ -360,22 +360,22 @@ export class UserService {
     }
 
     try {
-      const user = await User.findOne({
+      const theUser = await User.findOne({
         where: { email },
         include: UserService.CATALOG_INCLUDES,
       });
 
-      if (!user) {
+      if (!theUser) {
         throw Boom.notFound("User not found");
       }
 
       return {
         status: "USER FOUND SUCCESSFULLY",
         // includePassword: true — this object is for internal auth use only.
-        userData: UserService._formatUser(user, { includePassword: false }),
+        userData: UserService._formatUser(theUser, { includePassword: false }),
       };
     } catch (err) {
-      throw Boom.boomify(err, { message: "Unable to find user" });
+      throw Boom.boomify(err, { message: "Unable to find user by email" });
     }
   }
 
@@ -407,6 +407,7 @@ export class UserService {
       throw Boom.boomify(err, { message: "Unable to find users" });
     }
   }
+
   // ---------------------------------------------------------------------------
   // STATIC UTILITIES
   // ---------------------------------------------------------------------------
@@ -451,7 +452,7 @@ export class UserService {
 
     return {
       ...rest,
-      ...Boom(includePassword ? { password } : {}),
+      ...(includePassword ? { password } : {}),
       role: roleData ?? null,
       status: statusData ?? null,
       phones: phones ?? [],

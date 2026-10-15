@@ -3,10 +3,10 @@ import { sequelize } from '../../libraries/DBConnection.js';
 // Import DataTypes from sequelize to define column types
 import { DataTypes } from 'sequelize';
 
-// Define the name of the user table
-export const  ROOM_TYPE_TABLE = 'room_type';
+// Define the name of the room type table
+export const ROOM_TYPE_TABLE = 'room_type';
 
-// Define the user model
+// Define the room type model
 export const RoomType = sequelize.define(
   // Table name
   ROOM_TYPE_TABLE,
@@ -20,33 +20,35 @@ export const RoomType = sequelize.define(
       autoIncrement: true,
     },
     name: {
-        type: DataTypes.STRING(50),
-        allowNull: false,
-        unique: true,
-      },
+      type: DataTypes.STRING(50),
+      allowNull: false,
+      unique: true,
+    },
     description: {
-        type: DataTypes.TEXT,
-        allowNull: false,
+      type: DataTypes.TEXT,
+      allowNull: false,
     },
-    price_per_night: {
-        type: DataTypes.DECIMAL(10, 2),
-        allowNull: false,
-        validate: {
-            min: 10,
-            max: 10000,
-        }
+    pricePerNight: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: false,
+      field: 'price_per_night',
+      validate: {
+        min: 10,
+        max: 10000,
+      },
     },
-    max_occupancy: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        validate: {
-            min: 1,
-            max: 10,
-        }
+    maxOccupancy: {
+      type: DataTypes.SMALLINT,
+      allowNull: false,
+      field: 'max_occupancy',
+      validate: {
+        min: 1,
+        max: 10,
+      },
     },
     amenities: {
-        type: DataTypes.JSONB,
-        allowNull: false,
+      type: DataTypes.JSONB,
+      allowNull: false,
     },
     createdAt: {
       type: DataTypes.DATE,
@@ -66,4 +68,5 @@ export const RoomType = sequelize.define(
     tableName: ROOM_TYPE_TABLE,
     modelName: 'room_type',
     timestamps: true,
-    });
+  }
+);
