@@ -6,6 +6,13 @@ import { Router } from "express";
 import { checkAPIkey } from "../middlewares/apiAuthHandler.js";
 // Middleware that verifies the user JWT
 import { authAppVerifyToken } from "../middlewares/tokenHandlers/authAppTokenHandler.js";
+// Middleware that count the /login and /reset-password attempts quantity
+import {
+  loginIpLimiter,
+  loginAccountLimiter,
+  resetPasswordIpLimiter,
+  resetPasswordAccountLimiter,
+} from "../middlewares/rateLimitHandler.js";
 
 // -------------------------- Validator Schema ---------------------------------
 
@@ -23,7 +30,10 @@ authenticationRouter.post(
   "/login",
   // Step 1: Verify the API key
   checkAPIkey,
-  // Step 2: Delegate to the controller
+  // Step 2: Supervise the attempts quantity
+  loginIpLimiter,
+  loginAccountLimiter,
+  // Step 3: Delegate to the controller
   login,
 );
 
