@@ -1,5 +1,5 @@
 import { UserService } from "../../services/userServices.js";
-import { Boom } from "@hapi/boom";
+import Boom from "@hapi/boom";
 
 /**
  * Creates a user from the request body and delegates persistence to UserService.

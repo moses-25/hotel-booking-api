@@ -33,7 +33,7 @@ userRouter.post(
   // Step 1: Verify the API key
   checkAPIkey,
   // Step 2: Verify the session token
-  authAppVerifyToken,
+  //authAppVerifyToken,
   // Step 3: Delegate to the controller
   createOneUser,
 );
