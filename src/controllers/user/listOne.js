@@ -33,16 +33,12 @@ export const listOneUser = async (req, res, next) => {
       return res.status(200).json({
         success: true,
         message: 'User found successfully',
-<<<<<<< HEAD
         user: response.userData,
-=======
-        user: userData,
->>>>>>> upstream/main
       });
     }
   } catch (err) {
     const boomError = Boom.boomify(err, {
-      message: 'It is not possible to find the user in the database.'
+      message: 'It is not possible to find the user in the database.',
     });
     next(boomError);
   }

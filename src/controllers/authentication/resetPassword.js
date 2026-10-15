@@ -1,10 +1,5 @@
-<<<<<<< HEAD
-import { AuthenticationServices } from "../../services/authenticationServices.js";
-import Boom from "@hapi/boom";
-=======
 import { AuthenticationServices } from '../../services/authenticationServices.js';
 import Boom from '@hapi/boom';
->>>>>>> upstream/main
 
 /**
  * Controller function to reset a user's password when they cannot log
@@ -32,10 +27,6 @@ import Boom from '@hapi/boom';
  * @returns {Promise<void>} - Sends a JSON response confirming the password was reset.
  */
 export const resetPassword = async (req, res, next) => {
-<<<<<<< HEAD
-=======
-
->>>>>>> upstream/main
   // Extract the identify-verification fields and the new password from the request body
   const { email, firstName, firstLastName, newPassword } = req.body;
 
@@ -44,7 +35,6 @@ export const resetPassword = async (req, res, next) => {
 
   try {
     // Attempt to reset the password
-<<<<<<< HEAD
     const response = await authenticationManager.resetPassword(
       email,
       firstName,
@@ -52,28 +42,15 @@ export const resetPassword = async (req, res, next) => {
       newPassword,
     );
 
-    if (response.status === "PASSWORD RESET SUCCESSFULLY") {
-      return res.status(200).json({
-        success: true,
-        message:
-          "Password reset successfully. Please log in your new password.",
-=======
-    const response = await authenticationManager.resetPassword(email, firstName, firstLastName, newPassword);
-
     if (response.status === 'PASSWORD RESET SUCCESSFULLY') {
       return res.status(200).json({
         success: true,
         message: 'Password reset successfully. Please log in your new password.',
->>>>>>> upstream/main
       });
     }
   } catch (err) {
     const boomError = Boom.boomify(err, {
-<<<<<<< HEAD
-      message: "It is not possible to reset the password.",
-=======
-      message: 'It is not possible to reset the password.'
->>>>>>> upstream/main
+      message: 'It is not possible to reset the password.',
     });
     next(boomError);
   }

@@ -1,10 +1,5 @@
-<<<<<<< HEAD
-import { UserService } from "../../services/userServices.js";
-import Boom from "@hapi/boom";
-=======
 import { UserService } from '../../services/userServices.js';
 import Boom from '@hapi/boom';
->>>>>>> upstream/main
 
 /**
  * Controller function to retrieve a single user by its email.
@@ -27,41 +22,23 @@ import Boom from '@hapi/boom';
  * @returns {Promise<void>} - Sends a JSON response with the requested user (password stripped) and the rotated token.
  */
 export const findByEmailUser = async (req, res, next) => {
-<<<<<<< HEAD
-=======
-
->>>>>>> upstream/main
   const email = req.body.email;
 
   const userManager = new UserService();
 
   try {
-<<<<<<< HEAD
-    const response = await userManager.findByEmail(email);
-
-    if (response.status === "USER FOUND SUCCESSFULLY") {
-      return res.status(200).json({
-        success: true,
-        message: "User found successfully",
-=======
-
     const response = await userManager.findByEmail(email);
 
     if (response.status === 'USER FOUND SUCCESSFULLY') {
       return res.status(200).json({
         success: true,
         message: 'User found successfully',
->>>>>>> upstream/main
         user: response.userData,
       });
     }
   } catch (err) {
     const boomError = Boom.boomify(err, {
-<<<<<<< HEAD
-      message: "It is not possible to find the user in the database.",
-=======
-      message: 'It is not possible to find the user in the database.'
->>>>>>> upstream/main
+      message: 'It is not possible to find the user in the database.',
     });
     next(boomError);
   }

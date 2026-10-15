@@ -1,9 +1,5 @@
 // Import the jsonwebtoken library to handling JWT operations
-<<<<<<< HEAD
-import jwt from "jsonwebtoken";
-=======
 import jwt from 'jsonwebtoken';
->>>>>>> upstream/main
 
 /**
  * Verifies a given JSON Web Token (JWT).

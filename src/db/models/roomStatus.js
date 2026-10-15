@@ -8,13 +8,9 @@ export const ROOM_STATUS_TABLE = 'room_status';
 
 // Define the room status model
 export const RoomStatus = sequelize.define(
-<<<<<<< HEAD
   // Table name
   ROOM_STATUS_TABLE,
   // Table columns
-=======
-  ROOM_STATUS_TABLE,
->>>>>>> upstream/main
   {
     id: {
       type: DataTypes.INTEGER,

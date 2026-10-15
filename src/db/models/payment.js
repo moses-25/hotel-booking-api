@@ -17,16 +17,9 @@ export const Payment = sequelize.define(
       unique: true,
       autoIncrement: true,
     },
-<<<<<<< HEAD
-    bookingId: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      field: 'booking_id',
-=======
     booking: {
       type: DataTypes.INTEGER,
       allowNull: false,
->>>>>>> upstream/main
       references: {
         model: 'booking',
         key: 'id',
