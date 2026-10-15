@@ -1,14 +1,24 @@
 // Import the necessary modules from passport-jwt
+<<<<<<< HEAD
 import { Strategy, ExtractJwt } from "passport-jwt";
 // Import the configuration settings
 import { config } from "../../../../config/config.js";
+=======
+import { Strategy, ExtractJwt } from 'passport-jwt';
+// Import the configuration settings
+import { config } from '../../../../config/config.js';
+>>>>>>> upstream/main
 
 // Define options for the JWT strategy
 const options = {
   // Extract JWT frp, tje Authorization header as a Bearer token
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
   // Secret key for verifying the JWT
+<<<<<<< HEAD
   secretOrKey: config.authAppJwtKey,
+=======
+  secretOrKey: config.authAppJwtKey
+>>>>>>> upstream/main
 };
 
 /**

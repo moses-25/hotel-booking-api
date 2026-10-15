@@ -7,8 +7,13 @@
  * unexpected failures to the centralized Express error handler.
  */
 
+<<<<<<< HEAD
 import { AuthenticationServices } from "../../services/authenticationServices.js";
 import Boom from "@hapi/boom";
+=======
+import { AuthenticationServices } from '../../services/authenticationServices.js';
+import Boom from '@hapi/boom';
+>>>>>>> upstream/main
 
 /**
  * Authenticates a user and, on success, returns the issued JWT in the
@@ -44,24 +49,39 @@ import Boom from "@hapi/boom";
  * any error raised by the service, via `next`.
  */
 export const login = async (req, res, next) => {
+<<<<<<< HEAD
+=======
+
+>>>>>>> upstream/main
   const { email, password } = req.body;
 
   if (!email || !password) {
     return next(
+<<<<<<< HEAD
       Boom.badRequest("Email and password are required", {
         code: "MISSING_CREDENTIALS",
       }),
+=======
+      Boom.badRequest('Email and password are required', {
+        code: 'MISSING_CREDENTIALS',
+      })
+>>>>>>> upstream/main
     );
   }
 
   const authenticationManager = new AuthenticationServices();
 
   try {
+<<<<<<< HEAD
     const response = await authenticationManager.login(email, password);
+=======
+    const response =  await authenticationManager.login(email, password);
+>>>>>>> upstream/main
 
     // Expected auth failure: collapse both case into one response to
     // prevent user enumeration.
     if (
+<<<<<<< HEAD
       response.status === "User not found" ||
       response.status === "Wrong password"
     ) {
@@ -69,24 +89,48 @@ export const login = async (req, res, next) => {
         success: false,
         message: "Invalid credentials try again.",
         error: "INVALID_CREDENTIALS",
+=======
+      response.status === 'User not found' ||
+      response.status === 'Wrong password'
+    ) {
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid credentials try again.',
+        error: 'INVALID_CREDENTIALS',
+>>>>>>> upstream/main
       });
     }
 
     // Valid credentials, but the account is not 'Active'. No token is issued.
+<<<<<<< HEAD
     if (response.status === "Inactive user") {
       return res.status(403).json({
         success: false,
         message: "This account is inactive. Contact an administrator.",
         error: "USER_INACTIVE",
+=======
+    if (response.status === 'Inactive user') {
+      return res.status(403).json({
+        success: false,
+        message: 'This account is inactive. Contact an administrator.',
+        error: 'USER_INACTIVE',
+>>>>>>> upstream/main
       });
     }
 
     // Authentication successful. The service has already produced the JWT;
     // hand it to the client, which must send it as a Bearer token.
+<<<<<<< HEAD
     if (response.status === "logged") {
       return res.status(200).json({
         success: true,
         message: "Login successful.",
+=======
+    if (response.status === 'logged') {
+      return res.status(200).json({
+        success: true,
+        message: 'Login successful.',
+>>>>>>> upstream/main
         // Same key every other endpoint uses to echo the (rotated) token
         authentication: response.token,
       });
@@ -94,10 +138,18 @@ export const login = async (req, res, next) => {
 
     // Any other status is a contract violation: the service returned
     // something the controller does not know how to handle.
+<<<<<<< HEAD
     throw Boom.internal("Unexpected authentication status", {
       code: "AUTHENTICATION_ERROR",
       status: response.status,
     });
+=======
+    throw Boom.internal('Unexpected authentication status', {
+      code: 'AUTHENTICATION_ERROR',
+      status: response.status,
+    });
+
+>>>>>>> upstream/main
   } catch (err) {
     return next(err);
   }

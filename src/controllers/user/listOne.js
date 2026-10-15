@@ -33,7 +33,11 @@ export const listOneUser = async (req, res, next) => {
       return res.status(200).json({
         success: true,
         message: 'User found successfully',
+<<<<<<< HEAD
         user: response.userData,
+=======
+        user: userData,
+>>>>>>> upstream/main
       });
     }
   } catch (err) {

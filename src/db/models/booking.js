@@ -58,6 +58,10 @@ export const Booking = sequelize.define(
       field: 'guests_count',
       validate: {
         min: 1,
+<<<<<<< HEAD
+=======
+        max: 10,
+>>>>>>> upstream/main
       },
     },
     status: {

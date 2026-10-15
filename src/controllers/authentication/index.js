@@ -2,5 +2,10 @@
 // Re-exports every controller function so that routers and other modules can
 // import them from a single path, instead of importing each module individually.
 
+<<<<<<< HEAD
 export { login } from "./login.js";
 export { resetPassword } from "./resetPassword.js";
+=======
+export { login } from './login.js';
+export { resetPassword } from './resetPassword.js';
+>>>>>>> upstream/main

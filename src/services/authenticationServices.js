@@ -7,6 +7,7 @@
  */
 
 // import the user data model
+<<<<<<< HEAD
 import { User } from "../db/models/user.js";
 // import the related catalog models needed to embed FK data as nested objects
 import { UserRole } from "../db/models/userRole.js";
@@ -22,6 +23,23 @@ import { hashPassword } from "../utils/auth/passwordHash.js";
 import { config } from "../config/config.js";
 // boom allows managing possible errors
 import Boom from "@hapi/boom";
+=======
+import { User } from '../db/models/user.js';
+// import the related catalog models needed to embed FK data as nested objects
+import { UserRole } from '../db/models/userRole.js';
+import { UserStatus } from '../db/models/userStatus.js';
+// Import the authentication utility module to sign JWT token
+import { signUserToken } from '../utils/auth/tokenSign.js';
+// Import bcrypt takes care of hashing the user's password
+import bcrypt from 'bcryptjs';
+// import the promise to encrypt the user's password
+import { hashPassword } from '../utils/auth/passwordHash.js';
+// Import the centralized API configuration, which resolves all
+// Environment variables
+import { config } from '../config/config.js';
+// boom allows managing possible errors
+import Boom from '@hapi/boom';
+>>>>>>> upstream/main
 
 /**
  * Service class for authentication-related operations.
@@ -33,6 +51,10 @@ import Boom from "@hapi/boom";
  * @class AuthenticationService
  */
 export class AuthenticationServices {
+<<<<<<< HEAD
+=======
+
+>>>>>>> upstream/main
   /**
    * Authenticates a user by email + password.
    *
@@ -58,45 +80,76 @@ export class AuthenticationServices {
    *   (e.g. DB errors, missing role assignment).
    */
   async login(email, password) {
+<<<<<<< HEAD
+=======
+
+>>>>>>> upstream/main
     try {
       const userRecord = await User.findOne({
         where: { email },
         include: [
+<<<<<<< HEAD
           { model: UserStatus, as: "statusData", attributes: ["id", "name"] },
           { model: UserRole, as: "roleData", attributes: ["id", "name"] },
+=======
+          { model: UserStatus, as: 'statusData', attributes: ['id', 'name']},
+          { model: UserRole, as: 'roleData', attributes: ['id', 'name']},
+>>>>>>> upstream/main
         ],
       });
 
       if (!userRecord) {
+<<<<<<< HEAD
         return { status: "User not found" };
+=======
+        return { status: 'User not found' };
+>>>>>>> upstream/main
       }
 
       const validPassword = await bcrypt.compare(password, userRecord.password);
 
       if (!validPassword) {
+<<<<<<< HEAD
         return { status: "Wrong password" };
+=======
+        return { status: 'Wrong password' };
+>>>>>>> upstream/main
       }
 
       // Only active accounts can start a session. Checked after the
       // password so status is not disclosed to unauthenticated callers.
+<<<<<<< HEAD
       if (userRecord.statusData?.name !== "Active") {
         return { status: "Inactive user" };
+=======
+      if (userRecord.statusData?.name !== 'Active') {
+        return { status: 'Inactive user'};
+>>>>>>> upstream/main
       }
 
       // Defensive guard: without a role there is nothing to authorize with.
       if (!userRecord.roleData) {
+<<<<<<< HEAD
         throw Boom.internal("The user has no valid role assigned");
+=======
+        throw Boom.internal('The user has no valid role assigned');
+>>>>>>> upstream/main
       }
 
       // Refresh the last-login stamp.
       await User.update(
         { lastLogin: new Date() },
+<<<<<<< HEAD
         { where: { id: userRecord.id } },
+=======
+        { where: { id: userRecord.id }}
+>>>>>>> upstream/main
       );
 
       const userToken = signUserToken(
         { id: userRecord.id, role: userRecord.roleData.name },
         config.authAppJwtKey,
+<<<<<<< HEAD
         "2m",
       );
 
@@ -105,6 +158,15 @@ export class AuthenticationServices {
       throw Boom.boomify(err, {
         message: "Unable to verify user credentials ",
       });
+=======
+        '2m'
+      );
+
+      return { status: 'logged', token: userToken };
+
+    } catch (err) {
+      throw Boom.boomify(err, { message: 'Unable to verify user credentials '});
+>>>>>>> upstream/main
     }
   }
 
@@ -134,14 +196,21 @@ export class AuthenticationServices {
    * error if the reset fails.
    */
   async resetPassword(email, firstName, firstLastName, newPassword) {
+<<<<<<< HEAD
     if (!email || !firstName || !firstLastName || !newPassword) {
       throw Boom.badRequest(
         "Email, first name, first last name, and new password must all be provided",
       );
+=======
+
+    if(!email || !firstName || !firstLastName || !newPassword) {
+      throw Boom.badRequest('Email, first name, first last name, and new password must all be provided');
+>>>>>>> upstream/main
     }
 
     try {
       const existingUser = await User.findOne({
+<<<<<<< HEAD
         where: { email, firstName, firstLastName },
       });
 
@@ -158,15 +227,40 @@ export class AuthenticationServices {
         throw Boom.badRequest(
           "The new password must be different from the previous password",
         );
+=======
+        where: { email, firstName, firstLastName }
+      });
+
+      if (!existingUser) {
+        throw Boom.notFound('No user was found matching the provided data.');
+      }
+
+      const isSameOld = await bcrypt.compare(newPassword, existingUser.password);
+
+      if (isSameOld) {
+        throw Boom.badRequest('The new password must be different from the previous password');
+>>>>>>> upstream/main
       }
 
       const hash = await hashPassword(newPassword);
 
+<<<<<<< HEAD
       await User.update({ password: hash }, { where: { id: existingUser.id } });
 
       return { status: "PASSWORD RESET SUCCESSFULLY" };
     } catch (err) {
       throw Boom.boomify(err, { message: "Unable to reset the password." });
+=======
+      await User.update(
+        { password: hash },
+        { where: { id: existingUser.id } }
+      );
+
+      return { status: 'PASSWORD RESET SUCCESSFULLY' };
+
+    } catch (err) {
+      throw Boom.boomify(err, { message: 'Unable to reset the password.'});
+>>>>>>> upstream/main
     }
   }
 }

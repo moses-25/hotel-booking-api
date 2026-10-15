@@ -9,4 +9,8 @@
     "src/**/*.mjs"
   ],
   "ext": "js,cjs,mjs,json,"
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> upstream/main

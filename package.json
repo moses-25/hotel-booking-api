@@ -1,9 +1,31 @@
 {
   "name": "hotel-booking-api",
   "version": "0.0.1",
+<<<<<<< HEAD
   "description": "secure role-based Hotel Booking API",
   "main": "src/api.js",
   "type": "module",
+=======
+  "description": "Secure role-based Hotel Booking API",
+  "keywords": [
+    "JWT",
+    "Express.js",
+    "Socket.io",
+    "PostgreSQL"
+  ],
+  "homepage": "https://github.com/primetek-africa/hotel-booking-api#readme",
+  "bugs": {
+    "url": "https://github.com/primetek-africa/hotel-booking-api/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/primetek-africa/hotel-booking-api.git"
+  },
+  "license": "MIT",
+  "author": "Cristian Camilo <Cristianco9>",
+  "type": "module",
+  "main": "src/api.js",
+>>>>>>> upstream/main
   "scripts": {
     "start": "node src/api.js",
     "dev": "nodemon src/api.js",
@@ -19,6 +41,7 @@
     "seed:revert": "sequelize-cli db:seed:undo --options-path .sequelizerc.cjs",
     "seed:delete": "sequelize-cli db:seed:undo:all --options-path .sequelizerc.cjs"
   },
+<<<<<<< HEAD
   "repository": {
     "type": "git",
     "url": "git+https://github.com/moses-25/hotel-booking-api.git"
@@ -35,6 +58,8 @@
     "url": "https://github.com/moses-25/hotel-booking-api/issues"
   },
   "homepage": "https://github.com/moses-25/hotel-booking-api#readme",
+=======
+>>>>>>> upstream/main
   "dependencies": {
     "@hapi/boom": "^10.0.1",
     "bcryptjs": "^3.0.3",
@@ -47,12 +72,19 @@
     "passport-jwt": "^4.0.1",
     "pg": "^8.23.0",
     "pg-hstore": "^2.3.4",
+<<<<<<< HEAD
     "repomix": "^1.18.1",
+=======
+>>>>>>> upstream/main
     "sequelize": "^6.37.8",
     "sequelize-cli": "^6.6.5"
   },
   "devDependencies": {
+<<<<<<< HEAD
     "eslint": "^10.11.0",
+=======
+    "eslint": "^10.12.0",
+>>>>>>> upstream/main
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.6",
     "morgan": "^1.12.1",

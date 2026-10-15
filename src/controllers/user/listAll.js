@@ -1,5 +1,10 @@
+<<<<<<< HEAD
 import { UserService } from "../../services/userServices.js";
 import Boom from "@hapi/boom";
+=======
+import { UserService } from '../../services/userServices.js';
+import Boom from '@hapi/boom';
+>>>>>>> upstream/main
 
 /**
  * Controller function to retrieve every user.
@@ -17,22 +22,37 @@ import Boom from "@hapi/boom";
  * @returns {Promise<void>} - Sends a JSON response with the collection, its total and the rotated token.
  */
 export const listAllUsers = async (req, res, next) => {
+<<<<<<< HEAD
+=======
+
+>>>>>>> upstream/main
   const userManager = new UserService();
 
   try {
     const response = await userManager.listAll();
 
+<<<<<<< HEAD
     if (response.status === "USERS FOUND SUCCESSFULLY") {
       return res.status(200).json({
         success: true,
         message: "Users found successfully",
+=======
+    if (response.status === 'USERS FOUND SUCCESSFULLY') {
+      return res.status(200).json({
+        success: true,
+        message: 'Users found successfully',
+>>>>>>> upstream/main
         total: response.total,
         users: response.usersData,
       });
     }
   } catch (err) {
     const boomError = Boom.boomify(err, {
+<<<<<<< HEAD
       message: "It is not possible to find all the users in the database.",
+=======
+      message: 'It is not possible to find all the users in the database.'
+>>>>>>> upstream/main
     });
     next(boomError);
   }

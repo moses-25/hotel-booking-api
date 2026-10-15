@@ -38,7 +38,10 @@ services:
       - "${PGADMIN_PORT}:${PGADMIN_CONTAINER_PORT}"
     volumes:
       - pgadmin_data:/var/lib/pgadmin
+<<<<<<< HEAD
       - ./docker/pgadmin/servers.json:/pgadmin4/servers.json:ro
+=======
+>>>>>>> upstream/main
     depends_on:
       hotel-booking-db:
         condition: service_healthy

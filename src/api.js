@@ -1,5 +1,6 @@
 // Import necessary modules and dependencies
 // Express framework for creating the api
+<<<<<<< HEAD
 import express from "express";
 // function to manage files and directories since the node.js api
 import path from "path";
@@ -19,15 +20,43 @@ import { theIPAddress, port } from "./libraries/netConfig.js";
 import routerAPI from "./routes/index.js";
 // Import the configuration module
 import { config } from "./config/config.js";
+=======
+import express from 'express';
+// function to manage files and directories since the node.js api
+import path from 'path';
+// function to have access to the directory or file path
+import { fileURLToPath } from 'url';
+// Middleware to handle body request
+import bodyParser from 'body-parser';
+// Middleware to cross origins request
+import cors from 'cors';
+// Middleware for logging HTTP requests
+import morgan from 'morgan';
+// Function to test database connection
+import { testConnection } from './libraries/DBConnection.js';
+// Import the IP address and port from the network configuration module
+import { theIPAddress, port } from './libraries/netConfig.js';
+// Main router for the API
+import routerAPI from './routes/index.js';
+// Import the configuration module
+import { config } from './config/config.js';
+>>>>>>> upstream/main
 // Custom error handling middlewares
 import {
   logError,
   errorHandler,
   boomErrorHandler,
+<<<<<<< HEAD
   ORMErrorHandler,
 } from "./middlewares/errorHandler.js";
 // Import the setup of the database entities associations
 import { setAssociations } from "./db/models/index.js";
+=======
+  ORMErrorHandler
+} from './middlewares/errorHandler.js';
+// Import the setup of the database entities associations
+import { setAssociations } from './db/models/index.js';
+>>>>>>> upstream/main
 
 // Create the API with Express.js
 const api = express();
@@ -39,7 +68,11 @@ const api = express();
 // Never use `true`: clients could then spoof X-Forwarded-For and dodge the
 // limiters. This must be set BEFORE any middleware that reads req.ip.
 if (config.trustProxyHops > 0) {
+<<<<<<< HEAD
   api.set("trust proxy", config.trustProxyHops);
+=======
+  api.set('trust proxy', config.trustProxyHops);
+>>>>>>> upstream/main
 }
 
 // -----------------------------------------------------------------------------
@@ -47,11 +80,16 @@ if (config.trustProxyHops > 0) {
 // -----------------------------------------------------------------------------
 
 // HTTP request logger middleware
+<<<<<<< HEAD
 api.use(morgan("dev"));
+=======
+api.use(morgan('dev'));
+>>>>>>> upstream/main
 
 // Configure CORS to allow requests from the configured frontend origin.
 // Mounted before the body parsers and the routers so preflight OPTIONS
 // requests (which carry no apikey/Authorization headers) are answered here
+<<<<<<< HEAD
 // and never reach checkApiKey.
 api.use(
   cors({
@@ -63,6 +101,17 @@ api.use(
     exposedHeaders: ["X-Access-Token", "Retry-After", "RateLimit"],
   }),
 );
+=======
+// and never reach checkAPIkey.
+api.use(cors({
+  origin: config.corsOrigin,
+  allowedHeaders: ['Content-Type', 'Authorization', 'apikey'],
+  // Headers the browser is allowed to read from the response:
+  // - X-Access-Token: the rotated JWT
+  // - Retry-After / RateLimit: rate-limit info on 429 responses
+  exposedHeaders: ['X-Access-Token', 'Retry-After', 'RateLimit'],
+}));
+>>>>>>> upstream/main
 
 // Middleware to parse URL-encoded data
 api.use(express.urlencoded({ extended: false }));
@@ -107,3 +156,7 @@ api.use(boomErrorHandler);
 api.use(errorHandler);
 
 // Export the API for the use in other files
+<<<<<<< HEAD
+=======
+export default api;
+>>>>>>> upstream/main

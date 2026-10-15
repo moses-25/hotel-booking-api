@@ -1,5 +1,10 @@
+<<<<<<< HEAD
 import { UserService } from "../../services/userServices.js";
 import Boom from "@hapi/boom";
+=======
+import { UserService } from '../../services/userServices.js';
+import Boom from '@hapi/boom';
+>>>>>>> upstream/main
 
 /**
  * Controller function to update an existing user by its id.
@@ -25,6 +30,10 @@ import Boom from "@hapi/boom";
  * @returns {Promise<void>} - Sends a JSON response with the operation result and the rotated token.
  */
 export const updateOneUser = async (req, res, next) => {
+<<<<<<< HEAD
+=======
+
+>>>>>>> upstream/main
   const userId = req.body.userId;
 
   const newUserData = {
@@ -38,11 +47,19 @@ export const updateOneUser = async (req, res, next) => {
   };
 
   if (!userId) {
+<<<<<<< HEAD
     throw Boom.badRequest("No user identifier provided");
   }
 
   if (!newUserData) {
     throw Boom.badRequest("No user data provided");
+=======
+    throw Boom.badRequest('No user identifier provided');
+  }
+
+  if (!newUserData) {
+    throw Boom.badRequest('No user data provided');
+>>>>>>> upstream/main
   }
 
   const userManager = new UserService();
@@ -50,15 +67,26 @@ export const updateOneUser = async (req, res, next) => {
   try {
     const response = await userManager.updateOne(userId, newUserData);
 
+<<<<<<< HEAD
     if (response.status === "UPDATED SUCCESSFULLY") {
       return res.status(200).json({
         success: true,
         message: "User updated successfully",
+=======
+    if (response.status === 'UPDATED SUCCESSFULLY') {
+      return res.status(200).json({
+        success: true,
+        message: 'User updated successfully',
+>>>>>>> upstream/main
       });
     }
   } catch (err) {
     const boomError = Boom.boomify(err, {
+<<<<<<< HEAD
       message: "It is not possible to update the user in the database.",
+=======
+      message: 'It is not possible to update the user in the database.'
+>>>>>>> upstream/main
     });
     next(boomError);
   }

@@ -1,5 +1,10 @@
+<<<<<<< HEAD
 import { UserService } from "../../services/userServices.js";
 import Boom from "@hapi/boom";
+=======
+import { UserService } from '../../services/userServices.js';
+import Boom from '@hapi/boom';
+>>>>>>> upstream/main
 
 /**
  * Controller function to replace the phone numbers of an existing user.
@@ -17,6 +22,7 @@ import Boom from "@hapi/boom";
  * @returns {Promise<void>} - Sends a JSON response with the operation result and the persisted phones.
  */
 export const updateUserPhones = async (req, res, next) => {
+<<<<<<< HEAD
   const userId = req.body.userId;
   const phones = req.body.phones;
 
@@ -26,6 +32,18 @@ export const updateUserPhones = async (req, res, next) => {
 
   if (!Array.isArray(phones)) {
     throw Boom.badRequest("No phones provided");
+=======
+
+  const userId = req.body.userId;
+  const phones = req.body.phones;
+
+  if(!userId) {
+    throw Boom.badRequest('No user identifier provided');
+  }
+
+  if(!Array.isArray(phones)) {
+    throw Boom.badRequest('No phones provided');
+>>>>>>> upstream/main
   }
 
   const userManager = new UserService();
@@ -33,16 +51,27 @@ export const updateUserPhones = async (req, res, next) => {
   try {
     const response = await userManager.updatePhones(userId, phones);
 
+<<<<<<< HEAD
     if (response.status === "PHONES UPDATED SUCCESSFULLY") {
       return res.status(200).json({
         success: true,
         message: "User phones updated successfully",
+=======
+    if (response.status === 'PHONES UPDATED SUCCESSFULLY') {
+      return res.status(200).json({
+        success: true,
+        message: 'User phones updated successfully',
+>>>>>>> upstream/main
         phones: response.phones,
       });
     }
   } catch (err) {
     const boomError = Boom.boomify(err, {
+<<<<<<< HEAD
       message: "It is not possible to update the user phones in the database.",
+=======
+      message: 'It is not possible to update the user phones in the database.'
+>>>>>>> upstream/main
     });
     next(boomError);
   }
