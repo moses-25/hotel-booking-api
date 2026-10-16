@@ -7,21 +7,21 @@
  */
 
 // import the user data model
-import { User } from '../db/models/user.js';
+import { User } from "../db/models/user.js";
 // import the related catalog models needed to embed FK data as nested objects
-import { UserRole } from '../db/models/userRole.js';
-import { UserStatus } from '../db/models/userStatus.js';
+import { UserRole } from "../db/models/userRole.js";
+import { UserStatus } from "../db/models/userStatus.js";
 // Import the authentication utility module to sign JWT token
-import { signUserToken } from '../utils/auth/tokenSign.js';
+import { signUserToken } from "../utils/auth/tokenSign.js";
 // Import bcrypt takes care of hashing the user's password
-import bcrypt from 'bcryptjs';
+import bcrypt from "bcryptjs";
 // import the promise to encrypt the user's password
-import { hashPassword } from '../utils/auth/passwordHash.js';
+import { hashPassword } from "../utils/auth/passwordHash.js";
 // Import the centralized API configuration, which resolves all
 // Environment variables
-import { config } from '../config/config.js';
+import { config } from "../config/config.js";
 // boom allows managing possible errors
-import Boom from '@hapi/boom';
+import Boom from "@hapi/boom";
 
 /**
  * Service class for authentication-related operations.
@@ -62,30 +62,30 @@ export class AuthenticationServices {
       const userRecord = await User.findOne({
         where: { email },
         include: [
-          { model: UserStatus, as: 'statusData', attributes: ['id', 'name'] },
-          { model: UserRole, as: 'roleData', attributes: ['id', 'name'] },
+          { model: UserStatus, as: "statusData", attributes: ["id", "name"] },
+          { model: UserRole, as: "roleData", attributes: ["id", "name"] },
         ],
       });
 
       if (!userRecord) {
-        return { status: 'User not found' };
+        return { status: "User not found" };
       }
 
       const validPassword = await bcrypt.compare(password, userRecord.password);
 
       if (!validPassword) {
-        return { status: 'Wrong password' };
+        return { status: "Wrong password" };
       }
 
       // Only active accounts can start a session. Checked after the
       // password so status is not disclosed to unauthenticated callers.
-      if (userRecord.statusData?.name !== 'Active') {
-        return { status: 'Inactive user' };
+      if (userRecord.statusData?.name !== "Active") {
+        return { status: "Inactive user" };
       }
 
       // Defensive guard: without a role there is nothing to authorize with.
       if (!userRecord.roleData) {
-        throw Boom.internal('The user has no valid role assigned');
+        throw Boom.internal("The user has no valid role assigned");
       }
 
       // Refresh the last-login stamp.
@@ -97,13 +97,13 @@ export class AuthenticationServices {
       const userToken = signUserToken(
         { id: userRecord.id, role: userRecord.roleData.name },
         config.authAppJwtKey,
-        '2m',
+        "10m",
       );
 
-      return { status: 'logged', token: userToken };
+      return { status: "logged", token: userToken };
     } catch (err) {
       throw Boom.boomify(err, {
-        message: 'Unable to verify user credentials ',
+        message: "Unable to verify user credentials ",
       });
     }
   }
@@ -136,7 +136,7 @@ export class AuthenticationServices {
   async resetPassword(email, firstName, firstLastName, newPassword) {
     if (!email || !firstName || !firstLastName || !newPassword) {
       throw Boom.badRequest(
-        'Email, first name, first last name, and new password must all be provided',
+        "Email, first name, first last name, and new password must all be provided",
       );
     }
 
@@ -146,7 +146,7 @@ export class AuthenticationServices {
       });
 
       if (!existingUser) {
-        throw Boom.notFound('No user was found matching the provided data.');
+        throw Boom.notFound("No user was found matching the provided data.");
       }
 
       const isSameOld = await bcrypt.compare(
@@ -156,7 +156,7 @@ export class AuthenticationServices {
 
       if (isSameOld) {
         throw Boom.badRequest(
-          'The new password must be different from the previous password',
+          "The new password must be different from the previous password",
         );
       }
 
@@ -164,9 +164,9 @@ export class AuthenticationServices {
 
       await User.update({ password: hash }, { where: { id: existingUser.id } });
 
-      return { status: 'PASSWORD RESET SUCCESSFULLY' };
+      return { status: "PASSWORD RESET SUCCESSFULLY" };
     } catch (err) {
-      throw Boom.boomify(err, { message: 'Unable to reset the password.' });
+      throw Boom.boomify(err, { message: "Unable to reset the password." });
     }
   }
 }
