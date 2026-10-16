@@ -1,5 +1,5 @@
-import { UserService } from '../../services/userServices.js';
-import Boom from '@hapi/boom';
+import { UserService } from "../../services/userServices.js";
+import Boom from "@hapi/boom";
 
 /**
  * Controller function to replace the phone numbers of an existing user.
@@ -21,11 +21,11 @@ export const updateUserPhones = async (req, res, next) => {
   const phones = req.body.phones;
 
   if (!userId) {
-    throw Boom.badRequest('No user identifier provided');
+    throw Boom.badRequest("No user identifier provided");
   }
 
   if (!Array.isArray(phones)) {
-    throw Boom.badRequest('No phones provided');
+    throw Boom.badRequest("No phones provided");
   }
 
   const userManager = new UserService();
@@ -33,16 +33,17 @@ export const updateUserPhones = async (req, res, next) => {
   try {
     const response = await userManager.updatePhones(userId, phones);
 
-    if (response.status === 'PHONES UPDATED SUCCESSFULLY') {
+    if (response.status === "PHONES UPDATED SUCCESSFULLY") {
       return res.status(200).json({
         success: true,
-        message: 'User phones updated successfully',
+        message: "User phones updated successfully",
         phones: response.phones,
+        authentication: res.locals.newUserToken,
       });
     }
   } catch (err) {
     const boomError = Boom.boomify(err, {
-      message: 'It is not possible to update the user phones in the database.',
+      message: "It is not possible to update the user phones in the database.",
     });
     next(boomError);
   }
