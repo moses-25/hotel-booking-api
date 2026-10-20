@@ -8,8 +8,11 @@ import { checkAPIkey } from "../middlewares/apiAuthHandler.js";
 import { authAppVerifyToken } from "../middlewares/tokenHandlers/authAppTokenHandler.js";
 // Middleware that valide the user's role
 import { checkRole } from "../middlewares/checkRoleHandler.js";
+// Middleware that validate the Joi Schema
+import { validatorHandler } from "../middlewares/validatorHandler.js";
 
 // -------------------------- Validator Schema ---------------------------------
+import { userSchema } from "../schema/userSchema.js";
 
 // ----------------------------- Controllers -----------------------------------
 import {
@@ -38,7 +41,9 @@ userRouter.post(
   authAppVerifyToken,
   // Step 3: Verify the user role
   checkRole(["Administrator"]),
-  // Step 4: Delegate to the controller
+  // Step 4: Validate the payload schema
+  validatorHandler(userSchema.newUserData, "body"),
+  // Step 5: Delegate to the controller
   createOneUser,
 );
 
@@ -54,7 +59,9 @@ userRouter.put(
   authAppVerifyToken,
   // Step 3: Verify the user role
   checkRole(["Administrator"]),
-  // Step 4: Delegate to the controller
+  // Step 4: Validate the payload schema
+  validatorHandler(userSchema.updateUserData, "body"),
+  // Step 5: Delegate to the controller
   updateOneUser,
 );
 
@@ -70,7 +77,9 @@ userRouter.put(
   authAppVerifyToken,
   // Step 3: Verify the user role
   checkRole(["Administrator"]),
-  // Step 4: Delegate to the controller
+  // Step 4: Validate the payload schema
+  validatorHandler(userSchema.updateUserPhones, "body"),
+  // Step 5: Delegate to the controller
   updateUserPhones,
 );
 
@@ -86,7 +95,9 @@ userRouter.post(
   authAppVerifyToken,
   // Step 3: Verify the user role
   checkRole(["Administrator"]),
-  // Step 4: Delegate to the controller
+  // Step 4: Validate the payload schema
+  validatorHandler(userSchema.getUserById, "body"),
+  // Step 5: Delegate to the controller
   updateLastLoginUser,
 );
 
@@ -102,7 +113,9 @@ userRouter.delete(
   authAppVerifyToken,
   // Step 3: Verify the user role
   checkRole(["Administrator"]),
-  // Step 4: Delegate to the controller
+  // Step 4: Validate the payload schema
+  validatorHandler(userSchema.getUserById, "body"),
+  // Step 5: Delegate to the controller
   deleteOneUser,
 );
 
@@ -118,7 +131,9 @@ userRouter.post(
   authAppVerifyToken,
   // Step 3: Verify the user role
   checkRole(["Administrator"]),
-  // Step 4: Delegate to the controller
+  // Step 4: Validate the payload schema
+  validatorHandler(userSchema.getUserById, "body"),
+  // Step 5: Delegate to the controller
   listOneUser,
 );
 
@@ -134,7 +149,9 @@ userRouter.post(
   authAppVerifyToken,
   // Step 3: Verify the user role
   checkRole(["Administrator"]),
-  // Step 4: Delegate to the controller
+  // Step 4: Validate the payload schema
+  validatorHandler(userSchema.getByEmail, "body"),
+  // Step 5: Delegate to the controller
   findByEmailUser,
 );
 
