@@ -31,7 +31,7 @@ export class RoomTypeService {
 
       return {
         status: "ROOM TYPE CREATED SUCCESSFULLY",
-        roomType: roomType.toJSON(),
+        roomType: RoomTypeService._formatRoomType(roomType),
       };
     } catch (err) {
       if (err.name === "SequelizeUniqueConstraintError") {
@@ -62,7 +62,7 @@ export class RoomTypeService {
 
       return {
         status: "ROOM TYPE FOUND SUCCESSFULLY",
-        roomType: roomType.toJSON(),
+        roomType: RoomTypeService._formatRoomType(roomType),
       };
     } catch (err) {
       if (Boom.isBoom(err)) {
@@ -82,7 +82,8 @@ export class RoomTypeService {
       const roomTypes = await RoomType.findAll({
         order: [["id", "ASC"]],
       });
-      const records = roomTypes.map((roomType) => roomType.toJSON());
+
+      const records = roomTypes.map(RoomTypeService._formatRoomType);
 
       return {
         status: "ROOM TYPES FOUND SUCCESSFULLY",
@@ -137,7 +138,7 @@ export class RoomTypeService {
       await roomType.update(updates);
       return {
         status: "ROOM TYPE UPDATED SUCCESSFULLY",
-        roomType: roomType.toJSON(),
+        roomType: RoomTypeService._formatRoomType(roomType),
       };
     } catch (err) {
       if (Boom.isBoom(err)) {
@@ -154,7 +155,7 @@ export class RoomTypeService {
    * Deletes a room type by its primary key.
    *
    * Database foreign-key constraints may reject deletion while rooms still
-   * reference this room type.
+   * reference this room type; that case is surfaced as a 409 Conflict.
    *
    * @param {string|number} roomTypeId
    * @returns {Promise<{status: string}>}
@@ -179,7 +180,40 @@ export class RoomTypeService {
       if (Boom.isBoom(err)) {
         throw err;
       }
+      if (err.name === "SequelizeForeignKeyConstraintError") {
+        throw Boom.conflict(
+          "Cannot delete a room type that is still referenced by existing rooms",
+        );
+      }
       throw Boom.boomify(err, { message: "Unable to delete room type" });
     }
+  }
+
+  // ---------------------------------------------------------------------------
+  // STATIC UTILITIES
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Reshapes a RoomType Sequelize instance into a plain object suitable for
+   * the API response.
+   *
+   * Sequelize serializes DECIMAL columns as strings (to avoid precision
+   * loss). We convert `pricePerNight` back to a Number so the JSON payload
+   * carries `180`, not `"180.00"`.
+   *
+   * @private
+   * @static
+   * @param {RoomType} roomType - The Sequelize RoomType instance.
+   * @returns {Object} The formatted, plain room-type object.
+   */
+  static _formatRoomType(roomType) {
+    const plain = roomType.toJSON();
+    return {
+      ...plain,
+      pricePerNight:
+        plain.pricePerNight !== null && plain.pricePerNight !== undefined
+          ? Number(plain.pricePerNight)
+          : null,
+    };
   }
 }
