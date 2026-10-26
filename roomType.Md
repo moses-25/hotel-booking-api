@@ -338,7 +338,23 @@ this **exact layering**. Practical checklist:
 
 ---
 
-## 8. Changelog
+## 8. Docker Compose cleanup
+
+Use this command to stop the Compose containers and remove orphaned
+containers and volumes:
+
+```bash
+# Stop the containers and destroy the volumes (--volumes is the magic flag)
+docker compose down --volumes --remove-orphans
+```
+
+> **Warning:** `--volumes` deletes Compose-managed volumes, including
+> persistent database data. Use this for a full reset; back up any data you
+> need to keep first.
+
+---
+
+## 9. Changelog
 
 | Date | Author | Change                                                                                                                  |
 | ---- | ------ | ----------------------------------------------------------------------------------------------------------------------- |
@@ -349,7 +365,7 @@ this **exact layering**. Practical checklist:
 
 ---
 
-## 9. Quick navigation
+## 10. Quick navigation
 
 | Concern                     | Where to look                                                          |
 | --------------------------- | ---------------------------------------------------------------------- |
