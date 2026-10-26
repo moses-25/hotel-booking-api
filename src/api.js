@@ -28,6 +28,7 @@ import {
 } from "./middlewares/errorHandler.js";
 // Import the setup of the database entities associations
 import { setAssociations } from "./db/models/index.js";
+import { useGraphql } from "./graphql/index.js";
 
 // Create the API with Express.js
 const api = express();
@@ -71,18 +72,19 @@ api.use(express.json());
 // Middleware for parsing JSON bodies
 api.use(bodyParser.json());
 
+// Provide a helpful response when the API base URL is opened in a browser.
+api.get("/", (_req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "Hotel Booking API is running",
+    api: "/api/v1",
+    graphql: "/api/v1/graphql",
+  });
+});
+
 // Static files path
 // Store in the constant the project dirname
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
-// Immediately Invoked Function Expression (IIFE) to run the server
-(async () => {
-  // Await the api to start listening on the specified IP address and port
-  const createApi = await api.listen(port, theIPAddress, (req, res) => {
-    // Log the server start information to the console
-    console.log(`Server on port http://${theIPAddress}:${port}`);
-  });
-})();
 
 // Set up all Sequelize models associations before any database query is made
 // This is a memory-only operation and does not require an active DB connection
@@ -91,6 +93,9 @@ setAssociations();
 // Test database connection
 // Call the function to ensure the database connection is working
 testConnection();
+
+// Start Apollo and mount GraphQL before the error handlers and HTTP listener.
+await useGraphql(api);
 
 // Initialize the main router
 // Set up API routes
@@ -105,6 +110,11 @@ api.use(ORMErrorHandler);
 api.use(boomErrorHandler);
 // General error handling middleware
 api.use(errorHandler);
+
+// Start listening only after all routes and middleware have been registered.
+api.listen(port, theIPAddress, () => {
+  console.log(`Server on port http://${theIPAddress}:${port}`);
+});
 
 // Export the API for the use in other files
 export default api;
