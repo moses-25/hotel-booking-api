@@ -36,7 +36,7 @@ roomTypeRouter.post(
   "/create",
   checkAPIkey,
   authAppVerifyToken,
-  checkRole(["Administrator"]),
+  //checkRole(["Administrator"]),
   validatorHandler(roomTypeSchema.newRoomTypeData, "body"),
   createOneRoomType,
 );
@@ -46,7 +46,7 @@ roomTypeRouter.put(
   "/update",
   checkAPIkey,
   authAppVerifyToken,
-  checkRole(["Administrator"]),
+  //checkRole(["Administrator"]),
   validatorHandler(roomTypeSchema.updateRoomTypeData, "body"),
   updateOneRoomType,
 );
@@ -56,7 +56,7 @@ roomTypeRouter.post(
   "/list-one",
   checkAPIkey,
   authAppVerifyToken,
-  checkRole(["Administrator"]),
+  //checkRole(["Administrator"]),
   validatorHandler(roomTypeSchema.getRoomTypeById, "body"),
   listOneRoomType,
 );
@@ -66,7 +66,7 @@ roomTypeRouter.get(
   "/list-all",
   checkAPIkey,
   authAppVerifyToken,
-  checkRole(["Administrator"]),
+  //checkRole(["Administrator"]),
   listAllRoomTypes,
 );
 
@@ -75,7 +75,7 @@ roomTypeRouter.delete(
   "/delete",
   checkAPIkey,
   authAppVerifyToken,
-  checkRole(["Administrator"]),
+  //checkRole(["Administrator"]),
   validatorHandler(roomTypeSchema.getRoomTypeById, "body"),
   deleteOneRoomType,
 );
