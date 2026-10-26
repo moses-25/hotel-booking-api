@@ -20,19 +20,18 @@ export const validatorHandler = (schema, property) => {
     // req.body is undefined when the request carries a no body,
     // so fall back to empty object to make Joi report the missing required
     // fields instated of letting the request through.
-    const data = req[property] ?? {}
+    const data = req[property] ?? {};
 
     // Validate the data against the provided Joi schema
     const { error } = schema.validate(data, { abortEarly: false });
 
     // If there is a validation error, create a Boom bad request error and
-    // forward it. Execution falls through to te next() call below and the
-    // controller runs anyway.
+    // forward it without allowing the controller to process invalid data.
     if (error) {
       return next(Boom.badRequest(error));
     }
 
     // If no error, proceed to the next middleware
     return next();
-  }
+  };
 };
