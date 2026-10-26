@@ -4,6 +4,7 @@ import { Router } from 'express';
 // Import the Services Routes for handle services related-routes
 import userRouter from './userRouter.js';
 import authenticationRouter from './authenticationRouter.js';
+import roomTypeRouter from './roomTypeRouter.js';
 
 // Function to set up API routes
 const routerAPI = (api) => {
@@ -16,6 +17,7 @@ const routerAPI = (api) => {
   // Catalog of the sub-routes
   router.use('/auth', authenticationRouter);
   router.use('/users', userRouter);
+  router.use('/room-types', roomTypeRouter);
 };
 
 // Export the routerAPI function for use in other API modules
