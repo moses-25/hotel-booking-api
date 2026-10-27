@@ -14,13 +14,23 @@ type User {
   firstLastName:    String!
   secondLastName:   String
   email:            String!
-  password          String!
   role:             UserRole!
   status:           UserStatus!
   lastLogin:        DateTime!
   phones:           [Phone!]!
-  createdAt         DateTime!
-  UpdatedAt         DateTime!
+  createdAt:        DateTime!
+  updatedAt:        DateTime!
+}
+
+type RoomType {
+  id:               ID!
+  name:             String!
+  description:      String!
+  pricePerNight:    Float!
+  maxOccupancy:     Int!
+  amenities:        [String!]!
+  createdAt:        DateTime!
+  updatedAt:        DateTime!
 }
 
 type AuthPayload {
@@ -42,9 +52,9 @@ input LoginDto {
 
 input ResetPasswordDto {
   email:            String!
-  firstName         String!
-  firstLastName     String!
-  newPassword       String!
+  firstName:        String!
+  firstLastName:    String!
+  newPassword:      String!
 }
 
 input UserIdDto     { id: ID! }
@@ -57,21 +67,42 @@ input CreateUserDto {
   firstLastName:    String!
   secondLastName:   String
   email:            String!
-  password          String!
+  password:         String!
   role:             ID!
   status:           ID!
-  phones:           [Phone!]!
+  phones:           [String!]!
   lastLogin:        DateTime
 }
 
+input RoomTypeIdDto {
+  roomTypeId:       ID!
+}
+
+input CreateRoomTypeDto {
+  name:             String!
+  description:      String!
+  pricePerNight:    Float!
+  maxOccupancy:     Int!
+  amenities:        [String!]!
+}
+
+input UpdateRoomTypeDto {
+  roomTypeId:       ID!
+  name:             String
+  description:      String
+  pricePerNight:    Float
+  maxOccupancy:     Int
+  amenities:        [String!]
+}
+
 input UpdateUserDto {
-  firstName         String
-  middleName        String
-  firstLastName     String
-  secondLastName    String
-  email             String
-  role              ID
-  status            ID
+  firstName:        String
+  middleName:       String
+  firstLastName:    String
+  secondLastName:   String
+  email:            String
+  role:             ID
+  status:           ID
 }
 
 input UpdatePhonesDto {
@@ -94,6 +125,12 @@ type Query {
 
   "Every user ordered by id ascending. Administrator only."
   allUsers: [User!]!
+
+  "One room type by ID. Administrator only."
+  roomType(dto: RoomTypeIdDto!): RoomType!
+
+  "Every room type ordered by ID ascending. Administrator only."
+  allRoomTypes: [RoomType!]!
 }
 
 # ------------------------------- Mutations ------------------------------------
@@ -109,7 +146,7 @@ type Mutation {
   "Create a new user. Administrator only."
   newUser(dto: CreateUserDto!): User!
 
-  "Update an existing user (partial)". Administrator only."
+  "Update an existing user (partial). Administrator only."
   updateUser(id: ID!, dto: UpdateUserDto!): User!
 
   "Replace a user's full phone collection. Administrator only."
@@ -117,4 +154,13 @@ type Mutation {
 
   "Delete a user and their phones. Administrator only."
   deleteUser(dto: UserIdDto!): Boolean!
+
+  "Create a room type. Administrator only."
+  newRoomType(dto: CreateRoomTypeDto!): RoomType!
+
+  "Update a room type (partial). Administrator only."
+  updateRoomType(dto: UpdateRoomTypeDto!): RoomType!
+
+  "Delete a room type. Administrator only."
+  deleteRoomType(dto: RoomTypeIdDto!): Boolean!
 }

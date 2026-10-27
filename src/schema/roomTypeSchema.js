@@ -111,4 +111,14 @@ export const roomTypeSchema = {
     maxOccupancy: joiRoomTypeMaxOccupancy.required(),
     amenities: joiRoomTypeAmenities.required(),
   }),
+
+  // Update payload: roomTypeId and at least one field to change.
+  updateRoomTypeData: Joi.object({
+    roomTypeId: joiRoomTypeId.required(),
+    name: joiRoomTypeName,
+    description: joiRoomTypeDescription,
+    pricePerNight: joiRoomTypePricePerNight,
+    maxOccupancy: joiRoomTypeMaxOccupancy,
+    amenities: joiRoomTypeAmenities,
+  }).min(2),
 };

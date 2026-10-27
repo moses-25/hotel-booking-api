@@ -10,12 +10,17 @@
  * other.
  */
 
-import { mergeResolvers } from '@graphql-tools/merge';
-import { authResolver } from './authResolver.js';
-import { userResolver } from './userResolver.js';
+import { mergeResolvers } from "@graphql-tools/merge";
+import { authResolver } from "./authResolver.js";
+import { userResolver } from "./userResolver.js";
+import { roomTypeResolver } from "./roomTypeResolver.js";
 
 /**
  * Combined resolver map consumed by `ApolloServer({ resolvers })`.
  * @type {Object}
  */
-export const resolvers = mergeResolvers([authResolver, userResolver]);
+export const resolvers = mergeResolvers([
+  authResolver,
+  userResolver,
+  roomTypeResolver,
+]);
