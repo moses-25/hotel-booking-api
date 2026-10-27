@@ -1,5 +1,6 @@
 import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from "@as-integrations/express5";
+import { ApolloServerPluginLandingPageLocalDefault } from "@apollo/server/plugin/landingPage/default";
 import { readFileSync } from "node:fs";
 import { DateTimeResolver } from "graphql-scalars";
 import { checkAPIkey } from "../middlewares/apiAuthHandler.js";
@@ -11,6 +12,19 @@ const typeDefs = readFileSync(
   new URL("./schema.graphql", import.meta.url),
   "utf8",
 );
+
+const checkGraphqlAPIKey = (req, res, next) => {
+  const isExplorerPage =
+    req.method === "GET" &&
+    req.accepts("html") &&
+    Object.keys(req.query ?? {}).length === 0;
+
+  if (isExplorerPage) {
+    return next();
+  }
+
+  return checkAPIkey(req, res, next);
+};
 
 /**
  * Starts Apollo and mounts the GraphQL endpoint on the Express application.
@@ -25,6 +39,7 @@ export const useGraphql = async (api) => {
       ...resolvers,
       DateTime: DateTimeResolver,
     },
+    plugins: [ApolloServerPluginLandingPageLocalDefault({ embed: true })],
   });
 
   await server.start();
@@ -32,7 +47,7 @@ export const useGraphql = async (api) => {
   api.use(
     "/api/v1/graphql",
     graphqlIpLimiter,
-    checkAPIkey,
+    checkGraphqlAPIKey,
     expressMiddleware(server, {
       context: async ({ req, res }) => buildContext({ req, res }),
     }),
