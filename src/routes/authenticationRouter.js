@@ -3,25 +3,25 @@ import { Router } from "express";
 // ----------------------------- Middlewares -----------------------------------
 
 // Middleware that verifies the API key sent by the client app
-import { checkAPIkey } from "../middlewares/apiAuthHandler.js";
+import { checkAPIkey } from '../middlewares/apiAuthHandler.js';
 // Middleware that count the /login and /reset-password attempts quantity
 import {
   loginIpLimiter,
   loginAccountLimiter,
   resetPasswordIpLimiter,
-  resetPasswordAccountLimiter,
-} from "../middlewares/rateLimitHandler.js";
+  resetPasswordAccountLimiter
+} from '../middlewares/rateLimitHandler.js';
 // Middleware that validate the Joi Schema
-import { validatorHandler } from "../middlewares/validatorHandler.js";
+import { validatorHandler} from '../middlewares/validatorHandler.js';
 
 // -------------------------- Validator Schema ---------------------------------
-import { authenticationSchema } from "../schema/authenticationSchema.js";
+import { authenticationSchema } from '../schema/authenticationSchema.js';
 
 // ----------------------------- Controllers -----------------------------------
 import {
   login,
-  resetPassword,
-} from "../controllers/authentication/index.js";
+  resetPassword
+} from '../controllers/authentication/index.js';
 
 // Create a new Router instance dedicated to the authentication resource
 const authenticationRouter = Router();
@@ -31,16 +31,16 @@ const authenticationRouter = Router();
 // Body: User credentials: email, password
 // -----------------------------------------------------------------------------
 authenticationRouter.post(
-  "/login",
+  '/login',
   // Step 1: Verify the API key
   checkAPIkey,
   // Step 2: Supervise the attempts quantity
   loginIpLimiter,
   loginAccountLimiter,
   // Step 3: Validate the payload schema
-  validatorHandler(authenticationSchema.loginData, "body"),
+  validatorHandler(authenticationSchema.loginData, 'body'),
   // Step 4: Delegate to the controller
-  login,
+  login
 );
 
 // -----------------------------------------------------------------------------
@@ -48,16 +48,16 @@ authenticationRouter.post(
 // Body: User credentials: email, firstName, firstLastName, and the new password
 // -----------------------------------------------------------------------------
 authenticationRouter.post(
-  "/reset-password",
+  '/reset-password',
   // Step 1: Verify the API key
   checkAPIkey,
   // Step 2: Supervise the attempts quantity
   resetPasswordIpLimiter,
   resetPasswordAccountLimiter,
   // Step 3: Validate the payload schema
-  validatorHandler(authenticationSchema.resetPasswordData, "body"),
+  validatorHandler(authenticationSchema.resetPasswordData, 'body'),
   // Step 4: Delegate to the controller
-  resetPassword,
+  resetPassword
 );
 
 export default authenticationRouter;

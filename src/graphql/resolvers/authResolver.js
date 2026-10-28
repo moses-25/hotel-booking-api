@@ -18,11 +18,11 @@
  * here is only about the unauthenticated entry points.
  */
 
-import { GraphQLError } from "graphql";
-import { AuthenticationServices } from "../../services/authenticationServices.js";
-import { UserService } from "../../services/userServices.js";
-import { authenticationSchema } from "../../schema/authenticationSchema.js";
-import { validate, toGraphQLError } from "../helpers.js";
+import { GraphQLError } from 'graphql';
+import { AuthenticationServices } from '../../services/authenticationServices.js';
+import { UserService } from '../../services/userServices.js';
+import { authenticationSchema } from '../../schema/authenticationSchema.js';
+import { validate, toGraphQLError } from '../helpers.js';
 
 const authenticationManager = new AuthenticationServices();
 const userManager = new UserService();
@@ -58,7 +58,7 @@ const MAX_ATTEMPTS = 5;
  * @returns {string} Composite key like `"127.0.0.1|user@example.com"`.
  */
 const attemptKey = (context, email) => {
-  const ip = context.req?.ip ?? "unknown";
+  const ip = context.req?.ip ?? 'unknown';
   return `${ip}|${String(email).toLowerCase()}`;
 };
 
@@ -78,9 +78,10 @@ const checkAttempts = (key) => {
   const record = attempts.get(key);
   if (!record || record.resetAt <= now) return;
   if (record.count >= MAX_ATTEMPTS) {
-    throw new GraphQLError("Too many login attempts. Please try again later.", {
-      extensions: { code: "TOO_MANY_REQUESTS" },
-    });
+    throw new GraphQLError(
+      'Too many login attempts. Please try again later.',
+      { extensions: { code: 'TOO_MANY_REQUESTS' } },
+    );
   }
 };
 
@@ -163,27 +164,28 @@ export const authResolver = {
         // Expected auth failure: collapse both cases into one response to
         // prevent user enumeration.
         if (
-          response.status === "User not found" ||
-          response.status === "Wrong password"
+          response.status === 'User not found' ||
+          response.status === 'Wrong password'
         ) {
           registerFailure(key);
-          throw new GraphQLError("Invalid credentials. Please try again.", {
-            extensions: { code: "INVALID_CREDENTIALS" },
-          });
+          throw new GraphQLError(
+            'Invalid credentials. Please try again.',
+            { extensions: { code: 'INVALID_CREDENTIALS' } },
+          );
         }
 
         // Valid credentials, but the account is not 'Active'. No token is
         // issued. Reported only AFTER the password check on purpose.
-        if (response.status === "Inactive user") {
+        if (response.status === 'Inactive user') {
           throw new GraphQLError(
-            "This account is inactive. Contact an administrator.",
-            { extensions: { code: "USER_INACTIVE" } },
+            'This account is inactive. Contact an administrator.',
+            { extensions: { code: 'USER_INACTIVE' } },
           );
         }
 
         // Success. The service has already produced the JWT; also fetch
         // the profile so the client doesn't need a second round-trip.
-        if (response.status === "logged") {
+        if (response.status === 'logged') {
           clearAttempts(key);
           const { userData } = await userManager.findByEmail(dto.email);
           return { token: response.token, user: userData };
@@ -191,9 +193,10 @@ export const authResolver = {
 
         // Contract violation: the service returned a status the resolver
         // does not know how to handle.
-        throw new GraphQLError("Unexpected authentication status.", {
-          extensions: { code: "AUTHENTICATION_ERROR" },
-        });
+        throw new GraphQLError(
+          'Unexpected authentication status.',
+          { extensions: { code: 'AUTHENTICATION_ERROR' } },
+        );
       } catch (err) {
         throw toGraphQLError(err);
       }
@@ -249,16 +252,17 @@ export const authResolver = {
         // else is a contract violation; surface it explicitly instead of
         // returning `undefined` (which would fail the non-null
         // `ResetPasswordResult!` return type with an opaque Apollo error).
-        if (response.status !== "PASSWORD RESET SUCCESSFULLY") {
-          throw new GraphQLError("Unexpected password reset status.", {
-            extensions: { code: "AUTHENTICATION_ERROR" },
-          });
+        if (response.status !== 'PASSWORD RESET SUCCESSFULLY') {
+          throw new GraphQLError(
+            'Unexpected password reset status.',
+            { extensions: { code: 'AUTHENTICATION_ERROR' } },
+          );
         }
 
         return {
           success: true,
           message:
-            "Password reset successfully. Please log in with your new password.",
+            'Password reset successfully. Please log in with your new password.',
         };
       } catch (err) {
         throw toGraphQLError(err);

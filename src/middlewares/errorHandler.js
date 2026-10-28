@@ -15,7 +15,7 @@ import Boom from '@hapi/boom';
 export const logError = (err, req, res, next) => {
   // Pass the error to the next middleware
   next(err);
-};
+}
 
 /**
  * Middleware to handle generic errors.
@@ -32,7 +32,7 @@ export const errorHandler = (err, req, res, next) => {
     message: err.message,
     stack: err.stack
   });
-};
+}
 
 /**
  * Middleware to handle Boom errors.
@@ -53,7 +53,7 @@ export const boomErrorHandler = (err, req, res, next) => {
     // Pass the error to the next middleware
     next(err);
   }
-};
+}
 
 /**
  * Middleware to handle Sequelize ORM validation errors.
@@ -77,4 +77,4 @@ export const ORMErrorHandler = (err, req, res, next) => {
   }
   // Pass the error to the next middleware
   next(err);
-};
+}

@@ -44,20 +44,21 @@ import Boom from '@hapi/boom';
  * any error raised by the service, via `next`.
  */
 export const login = async (req, res, next) => {
+
   const { email, password } = req.body;
 
   if (!email || !password) {
     return next(
       Boom.badRequest('Email and password are required', {
         code: 'MISSING_CREDENTIALS',
-      }),
+      })
     );
   }
 
   const authenticationManager = new AuthenticationServices();
 
   try {
-    const response = await authenticationManager.login(email, password);
+    const response =  await authenticationManager.login(email, password);
 
     // Expected auth failure: collapse both case into one response to
     // prevent user enumeration.
@@ -98,6 +99,7 @@ export const login = async (req, res, next) => {
       code: 'AUTHENTICATION_ERROR',
       status: response.status,
     });
+
   } catch (err) {
     return next(err);
   }

@@ -12,6 +12,7 @@ import { config } from '../config/config.js';
  * @param {Function} next - The next middleware function.
  */
 export const checkAPIkey = (req, res, next) => {
+
   // Extract the API key from the request headers
   const APIKey = req.headers['apikey'];
 

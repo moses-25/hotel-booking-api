@@ -27,6 +27,7 @@ import Boom from '@hapi/boom';
  * @returns {Promise<void>} - Sends a JSON response confirming the password was reset.
  */
 export const resetPassword = async (req, res, next) => {
+
   // Extract the identify-verification fields and the new password from the request body
   const { email, firstName, firstLastName, newPassword } = req.body;
 
@@ -35,12 +36,7 @@ export const resetPassword = async (req, res, next) => {
 
   try {
     // Attempt to reset the password
-    const response = await authenticationManager.resetPassword(
-      email,
-      firstName,
-      firstLastName,
-      newPassword,
-    );
+    const response = await authenticationManager.resetPassword(email, firstName, firstLastName, newPassword);
 
     if (response.status === 'PASSWORD RESET SUCCESSFULLY') {
       return res.status(200).json({
@@ -50,7 +46,7 @@ export const resetPassword = async (req, res, next) => {
     }
   } catch (err) {
     const boomError = Boom.boomify(err, {
-      message: 'It is not possible to reset the password.',
+      message: 'It is not possible to reset the password.'
     });
     next(boomError);
   }

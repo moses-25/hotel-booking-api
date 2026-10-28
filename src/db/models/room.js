@@ -8,9 +8,7 @@ export const ROOM_TABLE = 'room';
 
 // Define the room model
 export const Room = sequelize.define(
-  // Table name
   ROOM_TABLE,
-  // Table columns
   {
     id: {
       type: DataTypes.INTEGER,
@@ -19,7 +17,7 @@ export const Room = sequelize.define(
       unique: true,
       autoIncrement: true,
     },
-    name: {
+    number: {
       type: DataTypes.STRING(10),
       allowNull: false,
       unique: true,

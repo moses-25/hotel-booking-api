@@ -1,8 +1,8 @@
 // Import the utility to validate the request token
-import { verifyToken } from "../utils/auth/tokenVerify.js";
+import { verifyToken } from '../utils/auth/tokenVerify.js';
 // Import the centralized API configuration, which resolves all
 // Environment variables
-import { config } from "../config/config.js";
+import { config } from '../config/config.js';
 
 /**
  * Middleware to check user roles based on the decoded JWT payload
@@ -19,14 +19,14 @@ export const checkRole = (roles) => {
     // never established
     if (!req.user) {
       return res.status(403).json({
-        error: "Access Denied: Not authentication token provided.",
+        error: 'Access Denied: Not authentication token provided.'
       });
     }
 
     // Check if the user's role is present and authorized for this route
     if (!req.user.role || !roles.includes(req.user.role)) {
       return res.status(403).json({
-        error: "Unauthorized: Insufficient permissions.",
+        error: 'Unauthorized: Insufficient permissions.'
       });
     }
 

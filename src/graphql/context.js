@@ -1,15 +1,15 @@
 // Import the library used to verify JSON Web Tokens (JWTs).
-import jwt from "jsonwebtoken";
+import jwt from 'jsonwebtoken';
 // Import GraphQLError to represent authentication errors in GraphQL.
-import { GraphQLError } from "graphql";
+import { GraphQLError } from 'graphql';
 // Import the application configuration, including the JWT secret.
-import { config } from "../config/config.js";
+import { config } from '../config/config.js';
 // Import the utility responsible for signing user authentication tokens.
-import { signUserToken } from "../utils/auth/tokenSign.js";
+import { signUserToken } from '../utils/auth/tokenSign.js';
 
 // Define the lifetime of newly generated access tokens.
 // Each rotated token will remain valid for ten minutes.
-const TOKEN_TTL = "10m";
+const TOKEN_TTL = '10m';
 
 /**
  * Builds the GraphQL execution context and validates the user's token.
@@ -33,9 +33,9 @@ export const buildContext = async ({ req, res }) => {
     authError: null,
   };
 
-  // Extract the authentication header from the incoming request.
+  // Extract the authorization header from the incoming request.
   // Optional chaining prevents errors if the headers object is missing.
-  const header = req.headers?.authentication;
+  const header = req.headers?.authorization;
 
   // Allow the request to continue without authentication credentials.
   // Protected resolvers must enforce authentication when required.
@@ -43,14 +43,14 @@ export const buildContext = async ({ req, res }) => {
 
   // Separate the authentication scheme from the JWT.
   // Expected format: "Bearer <token>".
-  const [scheme, token] = header.split(" ");
+  const [scheme, token] = header.split(' ');
 
   // Reject credentials that do not use the Bearer scheme or
   // do not contain a token.
-  if (scheme?.toLowerCase() !== "bearer" || !token) {
+  if (scheme?.toLowerCase() !== 'bearer' || !token) {
     context.authError = new GraphQLError(
-      "Invalid authentication credentials. Please sign in again.",
-      { extensions: { code: "INVALID_TOKEN" } },
+      'Invalid authentication credentials. Please sign in again.',
+      { extensions: { code: 'INVALID_TOKEN' } },
     );
 
     // Return the context with the authentication error available
@@ -63,7 +63,7 @@ export const buildContext = async ({ req, res }) => {
     // including expiration when an expiration claim is present.
     // Restrict verification to the HS256 signing algorithm.
     const decoded = jwt.verify(token, config.authAppJwtKey, {
-      algorithms: ["HS256"],
+      algorithms: ['HS256'],
     });
 
     // Store the authenticated user's identity and role in the context.
@@ -85,7 +85,7 @@ export const buildContext = async ({ req, res }) => {
     // Send the replacement token in the HTTP response header.
     // Clients can read this header and use the token in subsequent
     // authenticated requests.
-    res.setHeader("X-Access-Token", rotated);
+    res.setHeader('X-Access-Token', rotated);
 
     // Store the replacement token in the context so that resolvers
     // or other application components can access it if necessary.
@@ -93,17 +93,17 @@ export const buildContext = async ({ req, res }) => {
   } catch (err) {
     // Determine whether verification failed because the token expired.
     // Other verification failures are treated as invalid credentials.
-    const expired = err.name === "TokenExpiredError";
+    const expired = err.name === 'TokenExpiredError';
 
     // Store a GraphQL-compatible error with an appropriate message
     // and a machine-readable code for the authorization logic.
     context.authError = new GraphQLError(
       expired
-        ? "Your session has expired. Please sign in again."
-        : "Invalid authentication credentials. Please sign in again.",
+        ? 'Your session has expired. Please sign in again.'
+        : 'Invalid authentication credentials. Please sign in again.',
       {
         extensions: {
-          code: expired ? "TOKEN_EXPIRED" : "INVALID_TOKEN",
+          code: expired ? 'TOKEN_EXPIRED' : 'INVALID_TOKEN',
         },
       },
     );

@@ -12,7 +12,7 @@ import jwt from 'jsonwebtoken';
  * - The expiration time fot the token. This can be a string
  * - (e.g, '1h' for 1 hour) or a number of seconds.
  * @returns {string}
- * - The signed JWT.
+ * - THe signed JWT.
  */
 export const signUserToken = (payload, secret, timer) => {
   return jwt.sign(payload, secret, { expiresIn: timer });

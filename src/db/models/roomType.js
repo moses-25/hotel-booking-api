@@ -8,9 +8,7 @@ export const ROOM_TYPE_TABLE = 'room_type';
 
 // Define the room type model
 export const RoomType = sequelize.define(
-  // Table name
   ROOM_TYPE_TABLE,
-  // Table columns
   {
     id: {
       type: DataTypes.INTEGER,

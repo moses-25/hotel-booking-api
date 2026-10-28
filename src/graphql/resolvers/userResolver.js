@@ -37,15 +37,15 @@
  * "Cannot return null for non-nullable field" error.
  */
 
-import { GraphQLError } from "graphql";
-import { UserService } from "../../services/userServices.js";
-import { userSchema } from "../../schema/userSchema.js";
+import { GraphQLError } from 'graphql';
+import { UserService } from '../../services/userServices.js';
+import { userSchema } from '../../schema/userSchema.js';
 import {
   validate,
   toGraphQLError,
   requireAuth,
-  requireRole,
-} from "../helpers.js";
+  requireRole
+} from '../helpers.js';
 
 const userManager = new UserService();
 
@@ -70,9 +70,9 @@ const userManager = new UserService();
  */
 const fetchUser = async (id) => {
   const response = await userManager.listOne(id);
-  if (response.status !== "USER FOUND SUCCESSFULLY") {
-    throw new GraphQLError("Unexpected listOne status.", {
-      extensions: { code: "INTERNAL_SERVER_ERROR" },
+  if (response.status !== 'USER FOUND SUCCESSFULLY') {
+    throw new GraphQLError('Unexpected listOne status.', {
+      extensions: { code: 'INTERNAL_SERVER_ERROR' },
     });
   }
   return response.userData;
@@ -95,8 +95,8 @@ const fetchUser = async (id) => {
  */
 const asIdStrings = (dto) => ({
   ...dto,
-  ...(dto.role !== undefined && { role: String(dto.role) }),
-  ...(dto.status !== undefined && { status: String(dto.status) }),
+  ...(dto.role    !== undefined && { role:    String(dto.role) }),
+  ...(dto.status  !== undefined && { status:  String(dto.status) }),
 });
 
 /**
@@ -104,7 +104,9 @@ const asIdStrings = (dto) => ({
  * @type {Object}
  */
 export const userResolver = {
+
   Query: {
+
     /**
      * `me: User!`
      *
@@ -151,7 +153,7 @@ export const userResolver = {
      *   - `INTERNAL_SERVER_ERROR` – anything else.
      */
     async user(_, { dto }, context) {
-      requireRole(context, ["Administrator"]);
+      requireRole(context, ['Administrator']);
       validate(userSchema.getUserById, { userId: dto.id });
 
       try {
@@ -184,14 +186,14 @@ export const userResolver = {
      *   - `INTERNAL_SERVER_ERROR` – anything else.
      */
     async userByEmail(_, { dto }, context) {
-      requireRole(context, ["Administrator"]);
+      requireRole(context, ['Administrator']);
       validate(userSchema.getByEmail, dto);
 
       try {
         const response = await userManager.findByEmail(dto.email);
-        if (response.status !== "USER FOUND SUCCESSFULLY") {
-          throw new GraphQLError("Unexpected findByEmail status.", {
-            extensions: { code: "INTERNAL_SERVER_ERROR" },
+        if (response.status !== 'USER FOUND SUCCESSFULLY') {
+          throw new GraphQLError('Unexpected findByEmail status.', {
+            extensions: { code: 'INTERNAL_SERVER_ERROR' },
           });
         }
         return response.userData;
@@ -216,13 +218,13 @@ export const userResolver = {
      *   - `INTERNAL_SERVER_ERROR` – anything else.
      */
     async allUsers(_, __, context) {
-      requireRole(context, ["Administrator"]);
+      requireRole(context, ['Administrator']);
 
       try {
         const response = await userManager.listAll();
-        if (response.status !== "USERS FOUND SUCCESSFULLY") {
-          throw new GraphQLError("Unexpected listAll status.", {
-            extensions: { code: "INTERNAL_SERVER_ERROR" },
+        if (response.status !== 'USERS FOUND SUCCESSFULLY') {
+          throw new GraphQLError('Unexpected listAll status.', {
+            extensions: { code: 'INTERNAL_SERVER_ERROR' },
           });
         }
         return response.usersData;
@@ -230,9 +232,11 @@ export const userResolver = {
         throw toGraphQLError(err);
       }
     },
+
   },
 
   Mutation: {
+
     /**
      * `newUser(dto: CreateUserDto!): User!`
      *
@@ -262,21 +266,21 @@ export const userResolver = {
      *   - `INTERNAL_SERVER_ERROR` – unexpected service status, DB failure.
      */
     async newUser(_, { dto }, context) {
-      requireRole(context, ["Administrator"]);
+      requireRole(context, ['Administrator']);
       validate(userSchema.newUserData, asIdStrings(dto));
 
       try {
         const createResponse = await userManager.createOne(dto);
-        if (createResponse.status !== "CREATED SUCCESSFULLY") {
-          throw new GraphQLError("Unexpected create-user status.", {
-            extensions: { code: "INTERNAL_SERVER_ERROR" },
+        if (createResponse.status !== 'CREATED SUCCESSFULLY') {
+          throw new GraphQLError('Unexpected create-user status.', {
+            extensions: { code: 'INTERNAL_SERVER_ERROR' },
           });
         }
 
         const found = await userManager.findByEmail(dto.email);
-        if (found.status !== "USER FOUND SUCCESSFULLY") {
-          throw new GraphQLError("Unexpected findByEmail status.", {
-            extensions: { code: "INTERNAL_SERVER_ERROR" },
+        if (found.status !== 'USER FOUND SUCCESSFULLY') {
+          throw new GraphQLError('Unexpected findByEmail status.', {
+            extensions: { code: 'INTERNAL_SERVER_ERROR' },
           });
         }
         return found.userData;
@@ -311,14 +315,14 @@ export const userResolver = {
      *   - `INTERNAL_SERVER_ERROR` – anything else.
      */
     async updateUser(_, { id, dto }, context) {
-      requireRole(context, ["Administrator"]);
+      requireRole(context, ['Administrator']);
       validate(userSchema.updateUserData, { userId: id, ...asIdStrings(dto) });
 
       try {
         const response = await userManager.updateOne(id, dto);
-        if (response.status !== "UPDATED SUCCESSFULLY") {
-          throw new GraphQLError("Unexpected update status.", {
-            extensions: { code: "INTERNAL_SERVER_ERROR" },
+        if (response.status !== 'UPDATED SUCCESSFULLY') {
+          throw new GraphQLError('Unexpected update status.', {
+            extensions: { code: 'INTERNAL_SERVER_ERROR' },
           });
         }
         return await fetchUser(id);
@@ -350,17 +354,14 @@ export const userResolver = {
      *   - `INTERNAL_SERVER_ERROR` – anything else.
      */
     async updateUserPhones(_, { dto }, context) {
-      requireRole(context, ["Administrator"]);
-      validate(userSchema.updateUserPhones, {
-        userId: dto.id,
-        phones: dto.phones,
-      });
+      requireRole(context, ['Administrator']);
+      validate(userSchema.updateUserPhones, { userId: dto.id, phones: dto.phones });
 
       try {
         const response = await userManager.updatePhones(dto.id, dto.phones);
-        if (response.status !== "PHONES UPDATED SUCCESSFULLY") {
-          throw new GraphQLError("Unexpected update-phones status.", {
-            extensions: { code: "INTERNAL_SERVER_ERROR" },
+        if (response.status !== 'PHONES UPDATED SUCCESSFULLY') {
+          throw new GraphQLError('Unexpected update-phones status.', {
+            extensions: { code: 'INTERNAL_SERVER_ERROR' },
           });
         }
         return await fetchUser(dto.id);
@@ -392,14 +393,14 @@ export const userResolver = {
      *   - `INTERNAL_SERVER_ERROR` – anything else.
      */
     async deleteUser(_, { dto }, context) {
-      requireRole(context, ["Administrator"]);
+      requireRole(context, ['Administrator']);
       validate(userSchema.getUserById, { userId: dto.id });
 
       try {
         const response = await userManager.deleteOne(dto.id);
-        if (response.status !== "DELETED SUCCESSFULLY") {
-          throw new GraphQLError("Unexpected delete status.", {
-            extensions: { code: "INTERNAL_SERVER_ERROR" },
+        if (response.status !== 'DELETED SUCCESSFULLY') {
+          throw new GraphQLError('Unexpected delete status.', {
+            extensions: { code: 'INTERNAL_SERVER_ERROR' },
           });
         }
         return true;

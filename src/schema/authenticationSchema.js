@@ -21,12 +21,12 @@ export const authenticationSchema = {
     password:         joiPassword.required(),
   }),
 
-  // POST /auth/reset-password (body: { firstName, firstLastName, email, newPassword })
+  // POST /auth/reset-password (body: { firstName, firstLastName, email, password })
   // Validate AuthenticationServices.resetPassword(email, firstName, firstLastName, newPassword)
   resetPasswordData: Joi.object({
     firstName:        joiFirstName.required(),
     firstLastName:    joiFirstLastName.required(),
     email:            joiEmail.required(),
-    newPassword:      joiPassword.required(),
+    newPassword:         joiPassword.required(),
   }),
 };

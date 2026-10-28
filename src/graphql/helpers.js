@@ -54,9 +54,10 @@ import Boom from "@hapi/boom";
 export const requireAuth = (context) => {
   if (context.authError) throw context.authError;
   if (!context.user) {
-    throw new GraphQLError("Authentication required. Please sign in.", {
-      extensions: { code: "INVALID_TOKEN" },
-    });
+    throw new GraphQLError(
+      'Authentication required. Please sign in.',
+      { extensions: { code: 'INVALID_TOKEN' } },
+    );
   }
   return context.user;
 };
@@ -85,9 +86,10 @@ export const requireAuth = (context) => {
 export const requireRole = (context, roles) => {
   const user = requireAuth(context);
   if (!user.role || !roles.includes(user.role)) {
-    throw new GraphQLError("Unauthorized: Insufficient permissions.", {
-      extensions: { code: "FORBIDDEN" },
-    });
+    throw new GraphQLError(
+      'Unauthorized: Insufficient permissions.',
+      { extensions: { code: 'FORBIDDEN' }},
+    );
   }
   return user;
 };
@@ -120,15 +122,18 @@ export const validate = (schema, data) => {
   const { error } = schema.validate(data, { abortEarly: false });
   if (!error) return;
 
-  throw new GraphQLError("Input validation failed", {
-    extensions: {
-      code: "BAD_USER_INPUT",
-      details: error.details.map((d) => ({
-        path: d.path.join("."),
-        message: d.message,
-      })),
-    },
-  });
+  throw new GraphQLError(
+    'Input validation failed',
+    {
+      extensions: {
+        code: 'BAD_USER_INPUT',
+        details: error.details.map((d) => ({
+          path: d.path.join('.'),
+          message: d.message,
+        })),
+      },
+    }
+  );
 };
 
 // ---------------------------- Error mapper -----------------------------------
@@ -138,12 +143,12 @@ export const validate = (schema, data) => {
  * Kept as a lookup table so the mapping is one place to change.
  */
 const BOOM_CODES = {
-  400: "BAD_USER_INPUT",
-  401: "UNAUTHENTICATED",
-  403: "FORBIDDEN",
-  404: "NOT_FOUND",
-  409: "CONFLICT",
-  429: "TOO_MANY_REQUESTS",
+  400: 'BAD_USER_INPUT',
+  401: 'UNAUTHENTICATED',
+  403: 'FORBIDDEN',
+  404: 'NOT_FOUND',
+  409: 'CONFLICT',
+  429: 'TOO_MANY_REQUESTS',
 };
 
 /**
@@ -178,18 +183,24 @@ export const toGraphQLError = (err) => {
   // Boom error: preserve message + status, derive a stable code.
   if (Boom.isBoom(err)) {
     const status = err.output.statusCode;
-    return new GraphQLError(err.message, {
-      extensions: {
-        code: BOOM_CODES[status] ?? "INTERNAL_SERVER_ERROR",
-        statusCode: status,
-      },
-    });
+    return new GraphQLError(
+      err.message,
+      {
+        extensions: {
+          code: BOOM_CODES[status] ?? 'INTERNAL_SERVER_ERROR',
+          statusCode: status
+        },
+      }
+    );
   }
 
   // Unknown error: generic internal error with no stack trace.
-  return new GraphQLError(err?.message ?? "Unexpected error", {
-    extensions: {
-      code: "INTERNAL_SERVER_ERROR",
-    },
-  });
+  return new GraphQLError(
+    err?.message ?? 'Unexpected error',
+    {
+      extensions: {
+        code: 'INTERNAL_SERVER_ERROR'
+      },
+    }
+  );
 };

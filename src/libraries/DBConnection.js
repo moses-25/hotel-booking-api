@@ -1,9 +1,9 @@
-// import the sequelize constructor from the sequelize library
-import { Sequelize } from 'sequelize';
-// import the configuration settings
+// Import the Sequelize constructor form the 'sequelize` library
+import { Sequelize} from 'sequelize';
+// Import the configuration settings
 import { config } from '../config/config.js';
 
-// create a new instance of sequelize with the provider credentials and options
+// Create a new instance of Sequelize with the provided credentials and options
 export const sequelize = new Sequelize(
   config.dbName,
   config.dbUser,
@@ -39,5 +39,3 @@ export const testConnection = async (next) => {
     console.error('Impossible to connect the database:', err);
   }
 };
-
-export const testconnection = testConnection;

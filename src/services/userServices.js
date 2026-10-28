@@ -10,16 +10,16 @@
  */
 
 // import the user data model
-import { User } from "../db/models/user.js";
+import { User } from '../db/models/user.js';
 // import the related catalog models needed to embed FK data as nested objects
-import { UserRole } from "../db/models/userRole.js";
-import { UserStatus } from "../db/models/userStatus.js";
+import { UserRole } from '../db/models/userRole.js';
+import { UserStatus } from '../db/models/userStatus.js';
 // import the child model that stores the user's phone numbers
-import { Phone } from "../db/models/phone.js";
+import { Phone } from '../db/models/phone.js';
 // import the promise to encrypt the user's password
-import { hashPassword } from "../utils/auth/passwordHash.js";
+import { hashPassword } from '../utils/auth/passwordHash.js';
 // boom allows managing possible errors
-import Boom from "@hapi/boom";
+import Boom from '@hapi/boom';
 
 /**
  * Service class for managing users.
@@ -31,6 +31,7 @@ import Boom from "@hapi/boom";
  * @class UserServices
  */
 export class UserService {
+
   /**
    * Creates a new user after verifying that the email is unique and
    * hashing the supplied password.
@@ -52,13 +53,14 @@ export class UserService {
    * wrapped Boom error if user creation fails.
    */
   async createOne(newUser) {
+
     try {
       const existingUserByEmail = await User.findOne({
-        where: { email: newUser.email },
+        where: { email: newUser.email }
       });
 
       if (existingUserByEmail) {
-        throw Boom.conflict("Email already exists");
+        throw Boom.conflict('Email already exists');
       }
 
       const hash = await hashPassword(newUser.password);
@@ -81,13 +83,14 @@ export class UserService {
           newUser.phones.map((number) => ({
             number: String(number).trim(),
             user: createdUser.id,
-          })),
+          }))
         );
       }
 
-      return { status: "CREATED SUCCESSFULLY" };
+      return { status: 'CREATED SUCCESSFULLY' };
+
     } catch (err) {
-      throw Boom.boomify(err, { message: "Unable to create new user" });
+      throw Boom.boomify(err, { message: 'Unable to create new user' });
     }
   }
 
@@ -112,8 +115,9 @@ export class UserService {
    * the update fails.
    */
   async updateOne(userId, newUserData) {
+
     if (!newUserData) {
-      throw Boom.badRequest("No data provided");
+      throw Boom.badRequest('No data provided');
     }
 
     try {
@@ -128,17 +132,18 @@ export class UserService {
           status: newUserData.status,
         },
         {
-          where: { id: userId },
-        },
+          where: { id: userId }
+        }
       );
 
       if (!updatedRows) {
-        throw Boom.notFound("User not found");
+        throw Boom.notFound('User not found');
       }
 
-      return { status: "UPDATED SUCCESSFULLY" };
+      return { status: 'UPDATED SUCCESSFULLY' };
+
     } catch (err) {
-      throw Boom.boomify(err, { message: "Unable to update user" });
+      throw Boom.boomify(err, { message: 'Unable to update user' });
     }
   }
 
@@ -162,12 +167,13 @@ export class UserService {
    * a wrapped Boom error if the update fails.
    */
   async updatePhones(userId, phones) {
+
     if (!userId) {
-      throw Boom.badRequest("No user identifier provided");
+      throw Boom.badRequest('No user identifier provided');
     }
 
     if (!Array.isArray(phones)) {
-      throw Boom.badRequest("Phones must be an array");
+      throw Boom.badRequest('Phones must be an array');
     }
 
     // Normalize: stringify, trim, drop blanks, remove duplicates.
@@ -175,7 +181,7 @@ export class UserService {
       ...new Set(
         phones
           .map((number) => String(number).trim())
-          .filter((number) => number.length > 0),
+          .filter((number) => number.length > 0)
       ),
     ];
 
@@ -188,7 +194,7 @@ export class UserService {
       });
 
       if (!existingUser) {
-        throw Boom.notFound("User not found");
+        throw Boom.notFound('User not found');
       }
 
       await Phone.destroy({
@@ -198,23 +204,24 @@ export class UserService {
 
       const createdPhones = normalizedPhones.length
         ? await Phone.bulkCreate(
-            normalizedPhones.map((number) => ({
-              number,
-              user: userId,
-            })),
-            { transaction },
-          )
+          normalizedPhones.map((number) => ({
+            number,
+            user: userId,
+          })),
+          { transaction }
+        )
         : [];
 
       await transaction.commit();
 
       return {
-        status: "PHONES UPDATED SUCCESSFULLY",
+        status: 'PHONES UPDATED SUCCESSFULLY',
         phones: createdPhones.map(({ id, number }) => ({ id, number })),
       };
+
     } catch (err) {
       await transaction.rollback();
-      throw Boom.boomify(err, { message: "Unable to update user phones" });
+      throw Boom.boomify(err, { message: 'Unable to update user phones' });
     }
   }
 
@@ -233,23 +240,25 @@ export class UserService {
    * the update fails.
    */
   async updateLastLogin(userId) {
+
     if (!userId) {
-      throw Boom.badRequest("No user identifier provided");
+      throw Boom.badRequest('No user identifier provided');
     }
 
     try {
       const [updatedRows] = await User.update(
         { lastLogin: new Date() },
-        { where: { id: userId } },
+        { where: { id: userId } }
       );
 
       if (!updatedRows) {
-        throw Boom.notFound("User not found");
+        throw Boom.notFound('User not found');
       }
 
-      return { status: "LAST LOGIN UPDATED SUCCESSFULLY" };
+      return { status: 'LAST LOGIN UPDATED SUCCESSFULLY' };
+
     } catch (err) {
-      throw Boom.boomify(err, { message: "Unable to update last login" });
+      throw Boom.boomify(err, { message: 'Unable to update last login' });
     }
   }
 
@@ -264,39 +273,41 @@ export class UserService {
    * deletion fails.
    */
   async deleteOne(userId) {
-    if (!userId) {
-      throw Boom.badRequest("No user identifier provided");
+
+    if(!userId) {
+      throw Boom.badRequest('No user identifier provided');
     }
 
     const transaction = await User.sequelize.transaction();
 
     try {
-      const user = await User.findByPk(userId, { transaction });
+      const user =  await User.findByPk(userId, { transaction });
 
-      if (!user) {
-        throw Boom.notFound("user not found");
+      if(!user) {
+        throw Boom.notFound('user not found');
       }
 
       await Phone.destroy({
         where: { user: userId },
-        transaction,
+        transaction
       });
 
       const deleteRows = await User.destroy({
         where: { id: userId },
-        transaction,
+        transaction
       });
 
       if (!deleteRows) {
-        throw Boom.notFound("User not found");
+        throw Boom.notFound('User not found');
       }
 
       await transaction.commit();
 
-      return { status: "DELETED SUCCESSFULLY" };
+      return { status: 'DELETED SUCCESSFULLY' };
+
     } catch (err) {
       await transaction.rollback();
-      throw Boom.boomify(err, { message: "Unable to delete user" });
+      throw Boom.boomify(err, { message: 'Unable to delete user' });
     }
   }
 
@@ -313,8 +324,9 @@ export class UserService {
    * the lookup fails.
    */
   async listOne(userId) {
-    if (!userId) {
-      throw Boom.badRequest("No user identifier provided");
+
+    if(!userId) {
+      throw Boom.badRequest('No user identifier provided');
     }
 
     try {
@@ -323,16 +335,17 @@ export class UserService {
         include: UserService.CATALOG_INCLUDES,
       });
 
-      if (!theUser) {
-        throw Boom.notFound("User not found");
+      if(!theUser) {
+        throw Boom.notFound('User not found');
       }
 
       return {
-        status: "USER FOUND SUCCESSFULLY",
-        userData: UserService._formatUser(theUser),
+        status: 'USER FOUND SUCCESSFULLY',
+        userData: UserService._formatUser(theUser)
       };
+
     } catch (err) {
-      throw Boom.boomify(err, { message: "Unable to find user" });
+      throw Boom.boomify(err, { message: 'Unable to find user' });
     }
   }
 
@@ -355,27 +368,30 @@ export class UserService {
    * the lookup fails.
    */
   async findByEmail(email) {
-    if (!email) {
-      throw Boom.badRequest("No email provided");
+
+    if(!email) {
+      throw Boom.badRequest('No email provided');
     }
 
     try {
+
       const theUser = await User.findOne({
         where: { email },
         include: UserService.CATALOG_INCLUDES,
       });
 
       if (!theUser) {
-        throw Boom.notFound("User not found");
+        throw Boom.notFound('User not found');
       }
 
       return {
-        status: "USER FOUND SUCCESSFULLY",
+        status: 'USER FOUND SUCCESSFULLY',
         // includePassword: true — this object is for internal auth use only.
-        userData: UserService._formatUser(theUser, { includePassword: false }),
+        userData: UserService._formatUser(theUser, { includePassword: false })
       };
+
     } catch (err) {
-      throw Boom.boomify(err, { message: "Unable to find user by email" });
+      throw Boom.boomify(err, { message: 'Unable to find user by email' });
     }
   }
 
@@ -390,21 +406,23 @@ export class UserService {
    * @throws {Boom} Throws a wrapped Boom error if the lookup fails.
    */
   async listAll() {
+
     try {
       const allUsers = await User.findAll({
-        order: [["id", "ASC"]],
+        order: [['id', 'ASC']],
         include: UserService.CATALOG_INCLUDES,
       });
 
       const records = allUsers.map(UserService._formatUser);
 
       return {
-        status: "USERS FOUND SUCCESSFULLY",
+        status: 'USERS FOUND SUCCESSFULLY',
         total: records.length,
         usersData: records,
       };
+
     } catch (err) {
-      throw Boom.boomify(err, { message: "Unable to find users" });
+      throw Boom.boomify(err, { message: 'Unable to find users' });
     }
   }
 
@@ -423,9 +441,9 @@ export class UserService {
    * @type {Array<Object>}
    */
   static CATALOG_INCLUDES = [
-    { model: UserRole, as: "roleData", attributes: ["id", "name"] },
-    { model: UserStatus, as: "statusData", attributes: ["id", "name"] },
-    { model: Phone, as: "phones", attributes: ["id", "number"] },
+    { model: UserRole, as: 'roleData', attributes: ['id', 'name'] },
+    { model: UserStatus, as: 'statusData', attributes: ['id', 'name'] },
+    { model: Phone, as: 'phones', attributes: ['id', 'number'] },
   ];
 
   /**
@@ -447,8 +465,15 @@ export class UserService {
    * @returns {Object} The formatted, plain user object.
    */
   static _formatUser(user, { includePassword = false } = {}) {
-    const { password, role, status, roleData, statusData, phones, ...rest } =
-      user.toJSON();
+    const {
+      password,
+      role,
+      status,
+      roleData,
+      statusData,
+      phones,
+      ...rest
+    } = user.toJSON();
 
     return {
       ...rest,

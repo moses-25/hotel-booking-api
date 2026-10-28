@@ -34,95 +34,75 @@ import {
   userPassword,
   userRoleId,
   userStatusId,
-  userPhoneNumber,
-} from "../utils/RegEx/userRegEx.js";
+  userPhoneNumber
+} from '../utils/RegEx/userRegEx.js';
 
 // -------------------------- Primitive Joi Types ------------------------------
 
 export const joiId = Joi.string().pattern(userId).messages({
-  "string.base": "The identifier must be a string.",
-  "string.pattern.base":
-    "The identifier must contain digits only (1 to 10 digits).",
+  'string.base': 'The identifier must be a string.',
+  'string.pattern.base': 'The identifier must contain digits only (1 to 10 digit).',
 });
 
 export const joiFirstName = Joi.string().pattern(userFirstName).messages({
-  "string.base": "The first name must be a string.",
-  "string.pattern.base":
-    "The first name must be between 1 and 50 characters and contain only letters and spaces.",
+  'string.base': 'The first name must be a string.',
+  'string.pattern.base': "The first name must be between 1 and 50 characters and contain only letters and spaces.",
 });
 
-export const joiMiddleName = Joi.string()
-  .pattern(userMiddleName)
-  .allow("")
-  .messages({
-    "string.base": "The middle name must be a string.",
-    "string.pattern.base":
-      "The middle name must be at most 50 characters and contain only letters and spaces.",
-  });
+export const joiMiddleName = Joi.string().pattern(userMiddleName).allow('').messages({
+  'string.base': 'The middle name must be a string.',
+  'string.pattern.base': "The middle name must be at most 50 characters and contain only letters and spaces.",
+});
 
-export const joiFirstLastName = Joi.string()
-  .pattern(userFirstLastName)
-  .messages({
-    "string.base": "The first last name must be a string.",
-    "string.pattern.base":
-      "The first last name must be between 1 and 50 characters and contain only letters and spaces.",
-  });
+export const joiFirstLastName = Joi.string().pattern(userFirstLastName).messages({
+  'string.base': 'The first last name must be a string.',
+  'string.pattern.base': "The first last name must be between 1 and 50 characters and contain only letters and spaces.",
+});
 
-export const joiSecondLastName = Joi.string()
-  .pattern(userSecondLastName)
-  .allow("")
-  .messages({
-    "string.base": "The second last name must be a string.",
-    "string.pattern.base":
-      "The second last name must be at most 50 characters and contain only letters and spaces.",
-  });
+export const joiSecondLastName = Joi.string().pattern(userSecondLastName).allow('').messages({
+  'string.base': 'The second last name must be a string.',
+  'string.pattern.base': "The second last name must be at most 50 characters and contain only letters and spaces.",
+});
 
 // Email additionally enforce `.max(100)` to match the VARCHAR(100) column.
 export const joiEmail = Joi.string().max(100).pattern(userEmail).messages({
-  "string.base": "The email must be a string.",
-  "string.max": "The email must not exceed 100 characters.",
-  "string.pattern.base":
-    "The email must have a valid format (example@domain,com).",
+  'string.base': 'The email must be a string.',
+  'string.max': 'The email must not exceed 100 characters.',
+  'string.pattern.base': 'The email must have a valid format (example@domain,com).',
 });
 
-export const joiPassword = Joi.string()
-  .max(100)
-  .pattern(userPassword)
-  .messages({
-    "string.base": "The password must be a string.",
-    "string.pattern.base":
-      "The password must be between 8 and 100 characters and contain at least one letter and one digit.",
-  });
+export const joiPassword = Joi.string().max(100).pattern(userPassword).messages({
+  'string.base': 'The password must be a string.',
+  'string.pattern.base': 'The password must be between 8 and 100 characters and contain at least one letter and one digit.',
+});
 
 export const joiRoleId = Joi.string().pattern(userRoleId).messages({
-  "string.base": "THe role id must be a string",
-  "string.pattern.base":
-    "The role id must contain digits only (1 to 10 digits),",
+  'string.base': 'THe role id must be a string',
+  'string.pattern.base': 'The role id must contain digits only (1 to 10 digits),',
 });
 
 export const joiStatusId = Joi.string().pattern(userStatusId).messages({
-  "string.base": "THe status id must be a string",
-  "string.pattern.base":
-    "The status id must contain digits only (1 to 10 digits),",
+  'string.base': 'THe status id must be a string',
+  'string.pattern.base': 'The status id must contain digits only (1 to 10 digits),',
 });
 
 export const joiPhoneNumber = Joi.string().pattern(userPhoneNumber).messages({
-  "string.base": "The phone number must be a string.",
-  "string.pattern.base":
-    'The phone number must be an optional "+" followed by 7 to 20 digits.',
+  'string.base': 'The phone number must be a string.',
+  'string.pattern.base': 'The phone number must be an optional "+" followed by 7 to 20 digits.',
 });
 
 export const joiPhones = Joi.array().items(joiPhoneNumber).messages({
-  "array.base": "The phones must be an array pg phone numbers",
+  'array.base': 'The phones must be an array pg phone numbers',
 });
 
 export const joiLastLogin = Joi.date().messages({
-  "date.base": "The last login must be a valid date.",
+  'date.base': 'The last login must be a valid date.',
 });
 
 // ----------------------------- Schema export ---------------------------------
 
 export const userSchema = {
+
   // POST /users/list-one (body: { userId })
   // Validate UserService.listOne(userId)
 
@@ -132,47 +112,47 @@ export const userSchema = {
   // DELETE /users/delete (body: { userId })
   // Validate UserService.deleteOne(userId)
   getUserById: Joi.object({
-    userId: joiId.required(),
+    userId:           joiId.required(),
   }),
 
   // POST /users/create (body: { firstName, email, ... })
   // Validate UserService.createOne(newUser)
   newUserData: Joi.object({
-    firstName: joiFirstName.required(),
-    middleName: joiMiddleName,
-    firstLastName: joiFirstLastName.required(),
-    secondLastName: joiSecondLastName,
-    email: joiEmail.required(),
-    password: joiPassword.required(),
-    role: joiRoleId.required(),
-    status: joiStatusId.required(),
-    phones: joiPhones,
-    lastLogin: joiLastLogin,
+    firstName:        joiFirstName.required(),
+    middleName:       joiMiddleName,
+    firstLastName:    joiFirstLastName.required(),
+    secondLastName:   joiSecondLastName,
+    email:            joiEmail.required(),
+    password:         joiPassword.required(),
+    role:             joiRoleId.required(),
+    status:           joiStatusId.required(),
+    phones:           joiPhones,
+    lastLogin:        joiLastLogin,
   }),
 
   // PATCH /users/update (body: { userId, firstName, email, ... })
   // Validate UserService.updateOne(userId, newUserData)
   updateUserData: Joi.object({
-    userId: joiId.required(),
-    firstName: joiFirstName,
-    middleName: joiMiddleName,
-    firstLastName: joiFirstLastName,
-    secondLastName: joiSecondLastName,
-    email: joiEmail,
-    role: joiRoleId,
-    status: joiStatusId,
+    userId:           joiId.required(),
+    firstName:        joiFirstName,
+    middleName:       joiMiddleName,
+    firstLastName:    joiFirstLastName,
+    secondLastName:   joiSecondLastName,
+    email:            joiEmail,
+    role:             joiRoleId,
+    status:           joiStatusId,
   }),
 
   // PUT /users/update-phones (body: { userId, phones })
   // Validate UserService.updatePhones(userId, phones)
   updateUserPhones: Joi.object({
-    userId: joiId.required(),
-    phones: joiPhones.required(),
+    userId:           joiId.required(),
+    phones:           joiPhones.required(),
   }),
 
   // POST /users/find-by-email (body: { email })
   // Validate userService.findByEmail(email)
   getByEmail: Joi.object({
-    email: joiEmail.required(),
+    email:            joiEmail.required(),
   }),
 };

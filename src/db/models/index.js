@@ -23,7 +23,7 @@ import { PaymentMethod } from './paymentMethod.js';
 import { PaymentStatus } from './paymentStatus.js';
 
 // ----------------------- Conversation domain ---------------------------------
-import { Conversation } from './conversation.js';
+import { Conversation } from './conversation.js ';
 import { ConversationStatus } from './conversationStatus.js';
 import { Message } from './message.js';
 
@@ -273,7 +273,7 @@ export function setAssociations() {
   Payment.belongsTo(User, {
     foreignKey: 'processedBy',
     targetKey: 'id',
-    as: 'processedByData',
+    as: 'processedByData'
   });
 
   // --------------------- payment domain associations -------------------------
