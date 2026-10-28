@@ -130,7 +130,7 @@ userRouter.post(
   // Step 2: Verify the session token
   authAppVerifyToken,
   // Step 3: Verify the user role
-  checkRole(["Administrator"]),
+  //checkRole(["Administrator"]),
   // Step 4: Validate the payload schema
   validatorHandler(userSchema.getUserById, "body"),
   // Step 5: Delegate to the controller
@@ -148,7 +148,7 @@ userRouter.post(
   // Step 2: Verify the session token
   authAppVerifyToken,
   // Step 3: Verify the user role
-  checkRole(["Administrator"]),
+  //checkRole(["Administrator"]),
   // Step 4: Validate the payload schema
   validatorHandler(userSchema.getByEmail, "body"),
   // Step 5: Delegate to the controller
@@ -166,7 +166,7 @@ userRouter.get(
   // Step 2: Verify the session token
   authAppVerifyToken,
   // Step 3: Verify the user role
-  checkRole(["Administrator"]),
+  //checkRole(["Administrator"]),
   // Step 4: Delegate to the controller
   listAllUsers,
 );
