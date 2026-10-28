@@ -22,10 +22,10 @@ DB_NAME=hotel_booking_db
 
 # Database connection host/port (host port, used by the API from your machine)
 DB_HOST=127.0.0.1
-DB_PORT=5432
+DB_PORT=5435
 
 # Port PostgreSQL listens on inside the container
-DB_CONTAINER_PORT=5432
+DB_CONTAINER_PORT=5435
 
 # ------------------------------ PgAdmin ---------------------------------------
 
