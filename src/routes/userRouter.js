@@ -40,7 +40,7 @@ userRouter.post(
   // Step 2: Verify the session token
   authAppVerifyToken,
   // Step 3: Verify the user role
-  checkRole(["Administrator"]),
+  //checkRole(["Administrator"]),
   // Step 4: Validate the payload schema
   validatorHandler(userSchema.newUserData, "body"),
   // Step 5: Delegate to the controller
