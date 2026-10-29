@@ -1,35 +1,37 @@
 // Import necessary modules and dependencies
 // Express framework for creating the api
-import express from 'express';
+import express from "express";
 // function to manage files and directories since the node.js api
-import path from 'path';
+import path from "path";
 // function to have access to the directory or file path
-import { fileURLToPath } from 'url';
+import { fileURLToPath } from "url";
 // Middleware to handle body request
-import bodyParser from 'body-parser';
+import bodyParser from "body-parser";
 // Middleware to cross origins request
-import cors from 'cors';
+import cors from "cors";
 // Middleware for logging HTTP requests
-import morgan from 'morgan';
+import morgan from "morgan";
 // Function to test database connection
-import { testConnection } from './libraries/DBConnection.js';
+import { testConnection } from "./libraries/DBConnection.js";
 // Import the IP address and port from the network configuration module
-import { theIPAddress, port } from './libraries/netConfig.js';
+import { theIPAddress, port } from "./libraries/netConfig.js";
 // Main router for the API
-import routerAPI from './routes/index.js';
+import routerAPI from "./routes/index.js";
 // Import the GraphQL with the Apollo server instance
-import { useGraphql } from './graphql/index.js';
+import { useGraphql } from "./graphql/index.js";
+// Import the webSocket initialization
+import { initSocket } from "./sockets/index.js";
 // Import the configuration module
-import { config } from './config/config.js';
+import { config } from "./config/config.js";
 // Custom error handling middlewares
 import {
   logError,
   errorHandler,
   boomErrorHandler,
-  ORMErrorHandler
-} from './middlewares/errorHandler.js';
+  ORMErrorHandler,
+} from "./middlewares/errorHandler.js";
 // Import the setup of the database entities associations
-import { setAssociations } from './db/models/index.js';
+import { setAssociations } from "./db/models/index.js";
 
 // Create the API with Express.js
 const api = express();
@@ -41,7 +43,7 @@ const api = express();
 // Never use `true`: clients could then spoof X-Forwarded-For and dodge the
 // limiters. This must be set BEFORE any middleware that reads req.ip.
 if (config.trustProxyHops > 0) {
-  api.set('trust proxy', config.trustProxyHops);
+  api.set("trust proxy", config.trustProxyHops);
 }
 
 // -----------------------------------------------------------------------------
@@ -49,7 +51,7 @@ if (config.trustProxyHops > 0) {
 // -----------------------------------------------------------------------------
 
 // HTTP request logger middleware
-api.use(morgan('dev'));
+api.use(morgan("dev"));
 
 // Configure CORS to allow requests from the configured frontend origin.
 // Mounted before the body parsers and the routers so preflight OPTIONS
@@ -57,23 +59,24 @@ api.use(morgan('dev'));
 // and never reach checkAPIkey.
 const allowedOrigins = [
   config.corsOrigin,
-  ...(config.env === 'development'
+  ...(config.env === "development"
     ? [
-      'https://sandbox.embed.apollographql.com',
-      'https://studio.apollographql.com',
-    ]
-    : []
-  ),
+        "https://sandbox.embed.apollographql.com",
+        "https://studio.apollographql.com",
+      ]
+    : []),
 ];
 
-api.use(cors({
-  origin: allowedOrigins,
-  allowedHeaders: ['Content-Type', 'Authorization', 'apikey'],
-  // Headers the browser is allowed to read from the response:
-  // - X-Access-Token: the rotated JWT
-  // - Retry-After / RateLimit: rate-limit info on 429 responses
-  exposedHeaders: ['X-Access-Token', 'Retry-After', 'RateLimit'],
-}));
+api.use(
+  cors({
+    origin: allowedOrigins,
+    allowedHeaders: ["Content-Type", "Authorization", "apikey"],
+    // Headers the browser is allowed to read from the response:
+    // - X-Access-Token: the rotated JWT
+    // - Retry-After / RateLimit: rate-limit info on 429 responses
+    exposedHeaders: ["X-Access-Token", "Retry-After", "RateLimit"],
+  }),
+);
 
 // Middleware for parsing JSON bodies
 api.use(bodyParser.json());
@@ -96,9 +99,15 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // Immediately Invoked Function Expression (IIFE) to run the server
 (async () => {
   // Await the api to start listening on the specified IP address and port
-  const createApi = await api.listen(port, theIPAddress, (req, res) => {
+  const httpServer = await api.listen(port, theIPAddress, (req, res) => {
     // Log the server start information to the console
     console.log(`Server on port http://${theIPAddress}:${port}`);
+
+    // Initialize the WebSocket server and attach it to the HTTP server
+    // Store the Socket.IO instance in the Express application to make it
+    // accessible from the routes and controllers.
+    const io = initSocket(httpServer);
+    api.set("io", io);
   });
 })();
 
