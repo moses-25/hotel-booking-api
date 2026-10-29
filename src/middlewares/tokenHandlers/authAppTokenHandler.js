@@ -18,7 +18,7 @@ import { signUserToken } from "../../utils/auth/tokenSign.js";
  */
 export const authAppVerifyToken = (req, res, next) => {
   const header = req.headers.authorization;
-  if (req.path === "/create") return next();
+  if (req.path === "/create") return next(); // added this to help me test API in postman
   if (!header) {
     return res.status(401).json({
       success: false,
