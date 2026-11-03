@@ -9,7 +9,7 @@
 //
 // Column → model → regex mapping (see src/db/models/conversation.js):
 //   guest       INTEGER  NOT NULL  FK → user.id              → conversationGuestId
-//   staff       INTEGER  NOT NULL  FK → user.id              → conversationStaffId
+//   staff       INTEGER  NULL      FK → user.id                → conversationStaffId
 //   status      INTEGER  NOT NULL  FK → conversation_status.id → conversationStatusId
 //   id          INTEGER  PK                                  → conversationId
 // ─────────────────────────────────────────────────────────────────────────────
