@@ -375,7 +375,8 @@ Because the caller is unauthenticated, identity is verified by requiring `email`
 | -------------------------------------- | ---------------------------- | ---------------- | ---------------- |
 | Users (all operations)                 | Yes                          | No               | No               |
 | Conversation statuses (all operations) | Yes                          | No               | No               |
-| Conversations (all operations)         | Yes                          | No               | No               |
+| Conversation administration            | Yes                          | No               | No               |
+| Chat inbox / queue / open / claim       | No                           | Own + queue / claim | Own / open       |
 | Create message                         | Participant or Administrator | Participant      | Participant      |
 | Read message / conversation messages   | Yes                          | Participant only | Participant only |
 | Delete message                         | Any message                  | Own messages     | Own messages     |
@@ -388,6 +389,8 @@ A "participant" is the guest or the staff member assigned to the conversation. A
 
 - Guest and staff must be different users.
 - The guest must hold the `Guest` role; the staff member must hold `Staff` or `Administrator`.
+- New guest conversations start in `Open` status without an assigned staff member; a staff member claims them to move them to `Assigned`.
+- Each guest may have only one non-closed conversation at a time.
 - Messages cannot be sent to a `Closed` conversation.
 - The message sender is always taken from the JWT; any `senderId` in a payload is ignored.
 
@@ -514,6 +517,14 @@ User objects returned by read endpoints embed catalogs and never include the pas
 | POST   | `/conversations/list-one`     | `{ conversationId }`                        |
 | GET    | `/conversations/list-all`     | none                                        |
 | POST   | `/conversations/list-by-user` | `{ userId }` (as guest or staff)            |
+
+### Chat inbox (Guest and Staff)
+
+| Method | Path                   | Body                       | Access |
+| ------ | ---------------------- | -------------------------- | ------ |
+| GET    | `/conversations/mine`  | none                       | Guest: own conversations; Staff: own assignments and open queue |
+| POST   | `/conversations/open`  | none                       | Guest |
+| POST   | `/conversations/claim` | `{ conversationId }`       | Staff |
 
 Conversation objects embed participants and status:
 
@@ -824,7 +835,6 @@ Define these collection or environment variables:
 - GraphQL operations and subscriptions for conversations and messages.
 - Shared rate-limit store (Redis) and Socket.IO adapter for horizontal scaling.
 - Automated test suite and continuous integration.
-- Per-role scoping of conversation listings (guests and staff reading their own conversations).
 
 ## Contributing
 
