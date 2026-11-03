@@ -193,6 +193,11 @@ The server binds to the machine's first non-internal IPv4 address on `API_PORT`
 
 ### Start the frontend
 
+Set `VITE_API_URL` and `VITE_API_KEY` in `frontend/src/.env` before starting
+the frontend. `VITE_API_URL` can be the API origin (for example,
+`http://localhost:7799`) or the REST base URL ending in `/api/v1`; the key
+should match the server's `API_KEY`. Vite reads this env file from `src/`.
+
 In a separate terminal, install and start the frontend from `frontend/`:
 
 ```bash
