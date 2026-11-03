@@ -4,6 +4,11 @@ import dotenv from 'dotenv';
 // Load environment variables from .env file into process.env
 dotenv.config();
 
+const databaseEnvPrefix =
+  process.env.NODE_ENV === 'production' ? 'PROD' : 'DEV';
+const databaseEnv = (name) =>
+  process.env[`${databaseEnvPrefix}_DB_${name}`] ?? process.env[`DB_${name}`];
+
 // Export the configuration object containing various API settings
 export const config = {
   // Set the environment
@@ -13,15 +18,15 @@ export const config = {
   // API port
   apiPort: process.env.API_PORT,
   // Database user name
-  dbUser: process.env.DB_USER,
+  dbUser: databaseEnv('USER'),
   // Database user password
-  dbPassword: process.env.DB_PASSWORD,
+  dbPassword: databaseEnv('PASSWORD'),
   // Database Host
-  dbHost: process.env.DB_HOST,
+  dbHost: databaseEnv('HOST'),
   // Database name
-  dbName: process.env.DB_NAME,
+  dbName: databaseEnv('NAME'),
   // Database port
-  dbPort: process.env.DB_PORT,
+  dbPort: databaseEnv('PORT'),
   // API key for the authentication application
   APIKey: process.env.API_KEY,
   // JWT secret key for the user authentication

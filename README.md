@@ -9,24 +9,25 @@ database, sharing one service layer, one validation layer and one authentication
 ## Table of Contents
 
 1. [Overview](#overview)
-2. [Features](#features)
-3. [Technology Stack](#technology-stack)
-4. [Architecture](#architecture)
-5. [Getting Started](#getting-started)
-6. [Configuration](#configuration)
-7. [Database](#database)
-8. [Authentication and Authorization](#authentication-and-authorization)
-9. [REST API Reference](#rest-api-reference)
-10. [GraphQL API Reference](#graphql-api-reference)
-11. [Real-Time Chat (Socket.IO)](#real-time-chat-socketio)
-12. [Error Handling](#error-handling)
-13. [Rate Limiting](#rate-limiting)
-14. [Security Notes](#security-notes)
-15. [Available Scripts](#available-scripts)
-16. [Testing with Postman](#testing-with-postman)
-17. [Roadmap](#roadmap)
-18. [Contributing](#contributing)
-19. [License](#license)
+2. [Repository Layout](#repository-layout)
+3. [Features](#features)
+4. [Technology Stack](#technology-stack)
+5. [Architecture](#architecture)
+6. [Getting Started](#getting-started)
+7. [Configuration](#configuration)
+8. [Database](#database)
+9. [Authentication and Authorization](#authentication-and-authorization)
+10. [REST API Reference](#rest-api-reference)
+11. [GraphQL API Reference](#graphql-api-reference)
+12. [Real-Time Chat (Socket.IO)](#real-time-chat-socketio)
+13. [Error Handling](#error-handling)
+14. [Rate Limiting](#rate-limiting)
+15. [Security Notes](#security-notes)
+16. [Available Scripts](#available-scripts)
+17. [Testing with Postman](#testing-with-postman)
+18. [Roadmap](#roadmap)
+19. [Contributing](#contributing)
+20. [License](#license)
 
 ---
 
@@ -36,6 +37,14 @@ The Hotel Booking API manages users, rooms, bookings, payments and a staff-to-gu
 support chat. The data model covers the complete booking domain; the HTTP and
 real-time surface currently implemented covers authentication, user management,
 conversation management and encrypted messaging.
+
+## Repository Layout
+
+- `server/` contains the API, its dependencies, database migrations/seeders and
+  backend configuration.
+- `frontend/` contains the frontend application.
+- `docker-compose.yml` at the repository root starts PostgreSQL and pgAdmin.
+- `docs/` contains project diagrams.
 
 Design goals:
 
@@ -99,17 +108,17 @@ Client
 
 | Layer                | Location                              | Responsibility                                                                           |
 | -------------------- | ------------------------------------- | ---------------------------------------------------------------------------------------- |
-| Routes               | `src/routes`                          | Declare endpoints and the middleware pipeline of each one.                               |
-| Middlewares          | `src/middlewares`                     | API key, JWT verification, role checks, validation, rate limiting, error handling.       |
-| Controllers          | `src/controllers`                     | Translate HTTP requests and responses; map service statuses to status codes.             |
-| GraphQL              | `src/graphql`                         | Schema, context builder (JWT verification and rotation), resolvers and helpers.          |
-| Sockets              | `src/sockets`                         | Socket.IO bootstrap, handshake authentication and chat events.                           |
-| Services             | `src/services`                        | Business rules and persistence. Single source of truth for every transport.              |
-| Schemas              | `src/schema`                          | Joi schemas, shared across REST, GraphQL and sockets.                                    |
-| RegEx                | `src/utils/RegEx`                     | Patterns that mirror column constraints, consumed by the Joi schemas.                    |
-| Models               | `src/db/models`                       | Sequelize models and the central association wiring in `index.js`.                       |
-| Migrations / Seeders | `src/db/migrations`, `src/db/seeders` | Schema evolution and catalog data.                                                       |
-| Utilities            | `src/utils`                           | Password hashing, token signing and verification, message cipher, authorization helpers. |
+| Routes               | `server/src/routes`                          | Declare endpoints and the middleware pipeline of each one.                               |
+| Middlewares          | `server/src/middlewares`                     | API key, JWT verification, role checks, validation, rate limiting, error handling.       |
+| Controllers          | `server/src/controllers`                     | Translate HTTP requests and responses; map service statuses to status codes.             |
+| GraphQL              | `server/src/graphql`                         | Schema, context builder (JWT verification and rotation), resolvers and helpers.          |
+| Sockets              | `server/src/sockets`                         | Socket.IO bootstrap, handshake authentication and chat events.                           |
+| Services             | `server/src/services`                        | Business rules and persistence. Single source of truth for every transport.              |
+| Schemas              | `server/src/schema`                          | Joi schemas, shared across REST, GraphQL and sockets.                                    |
+| RegEx                | `server/src/utils/RegEx`                     | Patterns that mirror column constraints, consumed by the Joi schemas.                    |
+| Models               | `server/src/db/models`                       | Sequelize models and the central association wiring in `index.js`.                       |
+| Migrations / Seeders | `server/src/db/migrations`, `server/src/db/seeders` | Schema evolution and catalog data.                                                       |
+| Utilities            | `server/src/utils`                           | Password hashing, token signing and verification, message cipher, authorization helpers. |
 
 ### Service result convention
 
@@ -132,19 +141,25 @@ or throw a Boom error. Each transport maps that outcome to its own response form
 git clone https://github.com/primetek-africa/hotel-booking-api.git
 cd hotel-booking-api
 
-# 2. Install dependencies (add development tooling with: npm run dev-dep)
+# 2. Install backend dependencies
+cd server
 npm install
 
-# 3. Create the .env file from the template
+# 3. Create server/.env from the template
 npm run env-var
+cd ..
 ```
 
-Edit `.env` and replace every secret before using the project anywhere other than a local machine (see [Configuration](#configuration)).
+Edit `server/.env` and replace every secret before using the project anywhere
+other than a local machine (see [Configuration](#configuration)).
 
 ### Start the database
 
+Run this command from the repository root. The `--env-file` option uses the
+backend environment file for the database and pgAdmin settings.
+
 ```bash
-docker compose up -d
+docker compose --env-file server/.env up -d
 ```
 
 This starts:
@@ -154,12 +169,16 @@ This starts:
 
 ### Run migrations and seeders
 
+Run these commands from `server/`:
+
 ```bash
 npm run migrations:run
 npm run seed:run
 ```
 
 ### Start the API
+
+Run these commands from `server/`:
 
 ```bash
 # Development (auto-reload)
@@ -172,12 +191,23 @@ npm start
 The server binds to the machine's first non-internal IPv4 address on `API_PORT`
 (default `7799`) and prints the address on startup. REST endpoints live under `/api/v1`.
 
+### Start the frontend
+
+In a separate terminal, install and start the frontend from `frontend/`:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
 ### Creating the first Administrator
 
 User creation is restricted to administrators, and the seeders create catalog
 data only (roles, statuses, and so on), not users. The first administrator must
 therefore be inserted directly into the database, with a bcrypt hash generated
-by the same library the API uses (`bcryptjs`, 11 salt rounds):
+by the same library the API uses (`bcryptjs`, 11 salt rounds). Run the following
+commands from `server/`:
 
 ```bash
 node -e "import('bcryptjs').then(b => b.default.hash('ChangeMe123', 11).then(console.log))"
@@ -197,7 +227,8 @@ After that, log in through `POST /api/v1/auth/login` and create further users th
 ## Configuration
 
 All configuration comes from environment variables loaded by `dotenv` and exposed
-through `src/config/config.js`. The template is `env/.envexample`.
+through `server/src/config/config.js`. The template is
+`server/env/.envexample`, which `npm run env-var` copies to `server/.env`.
 
 | Variable                                 | Description                                                                                                                                                            |
 | ---------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -300,7 +331,7 @@ it in the seeder if you want the standard `No show` label.
 
 The Sequelize connection sets a `+2:00` time zone offset, while the PostgreSQL
 container runs in UTC. Adjust `dialectOptions.timezone` in
-`src/libraries/DBConnection.js` to match your deployment.
+`server/src/libraries/DBConnection.js` to match your deployment.
 
 ## Authentication and Authorization
 
@@ -556,7 +587,7 @@ type Mutation {
 }
 ```
 
-The full definition lives in `src/graphql/schema.graphql`.
+The full definition lives in `server/src/graphql/schema.graphql`.
 
 ### Example
 
@@ -740,23 +771,25 @@ replica enforces the same budget. When running behind a reverse proxy, set
 
 ## Security Notes
 
-- **Secrets.** Never commit `.env`. Replace every value from `env/.envexample` before deployment.
+- **Secrets.** Never commit `server/.env`. Replace every value from `server/env/.envexample` before deployment.
 - **Message encryption.** Message bodies are encrypted with AES-256-GCM using a random 96-bit IV per message and stored as `v1:<iv>:<tag>:<ciphertext>` (base64). The `v1` prefix allows future key or cipher rotation. This protects against database dumps, backup theft and read-only SQL injection; it is not end-to-end encryption, since the key resides on the server.
 - **No sender spoofing.** The sender of a message is always the authenticated user.
 - **No enumeration.** Login responses do not distinguish unknown email from wrong password.
 - **Sensitive fields.** Password hashes are stripped from all user responses.
-- **GraphQL API key.** The `checkAPIkey` middleware is currently commented out on the GraphQL route in `src/graphql/index.js`. Enable it if the endpoint must require the same shared secret as REST.
+- **GraphQL API key.** The `checkAPIkey` middleware is currently commented out on the GraphQL route in `server/src/graphql/index.js`. Enable it if the endpoint must require the same shared secret as REST.
 - **Error detail.** The generic error handler currently returns the error message and stack trace in the response body. Restrict this to non-production environments before going live.
 - **Token delivery.** Tokens are returned in the response body and header; clients are responsible for storing them securely.
 
 ## Available Scripts
+
+Run these scripts from `server/`:
 
 | Script                                  | Description                                   |
 | --------------------------------------- | --------------------------------------------- |
 | `npm start`                             | Run the API with Node.                        |
 | `npm run dev`                           | Run the API with nodemon (auto-reload).       |
 | `npm run dev-dep`                       | Install dependencies and development tooling. |
-| `npm run env-var`                       | Copy `env/.envexample` to `.env`.             |
+| `npm run env-var`                       | Copy the backend environment template to `.env`. |
 | `npm run migrations:generate -- <name>` | Generate a new migration.                     |
 | `npm run migrations:run`                | Apply all pending migrations.                 |
 | `npm run migrations:revert`             | Revert the last migration.                    |
@@ -768,7 +801,8 @@ replica enforces the same budget. When running behind a reverse proxy, set
 
 ## Testing with Postman
 
-A ready-to-use collection is included: `hotel-booking-api.postman_collection.json`.
+A ready-to-use collection is included at
+`server/hotel-booking-api.postman_collection.json`.
 It covers the user, authentication and GraphQL operations.
 
 Define these collection or environment variables:

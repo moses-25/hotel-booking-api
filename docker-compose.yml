@@ -7,12 +7,12 @@ services:
     environment:
       TZ: UTC
       PGTZ: UTC
-      PGPORT: ${DB_CONTAINER_PORT}
-      POSTGRES_DB: ${DB_NAME}
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      PGPORT: ${DEV_DB_CONTAINER_PORT:-${DB_CONTAINER_PORT:-5432}}
+      POSTGRES_DB: ${DEV_DB_NAME:-${DB_NAME}}
+      POSTGRES_USER: ${DEV_DB_USER:-${DB_USER}}
+      POSTGRES_PASSWORD: ${DEV_DB_PASSWORD:-${DB_PASSWORD}}
     ports:
-      - "${DB_PORT}:${DB_CONTAINER_PORT}"
+      - "${DEV_DB_PORT:-${DB_PORT:-5432}}:${DEV_DB_CONTAINER_PORT:-${DB_CONTAINER_PORT:-5432}}"
     volumes:
       - pg_data:/var/lib/postgresql/data
     healthcheck:
