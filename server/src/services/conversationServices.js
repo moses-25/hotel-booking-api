@@ -16,6 +16,7 @@ import { UserRole } from '../db/models/userRole.js';
 import { ConversationStatus } from '../db/models/conversationStatus.js';
 import Boom from '@hapi/boom';
 import { Op } from 'sequelize';
+import { sequelize } from '../libraries/DBConnection.js';
 
 export class ConversationService {
 
@@ -248,9 +249,8 @@ export class ConversationService {
    * Retrieves every conversation, ordered by id ascending.
    *
    * This method is intentionally unscoped: it is only reachable through
-   * Administrator-gated routes. When per-role scoping is introduced (Guest
-   * → own conversations, Staff → assigned), add a `(userId, role)` filter
-   * to the `where` clause here rather than duplicating the method.
+   * Administrator-gated routes. Guest and Staff use `listForChatUser`
+   * instead, which scopes the result to their own inbox and staff queue.
    *
    * @async
    * @returns {Promise<{ status: string, total: number, conversationsData: Object[] }>}
@@ -280,9 +280,8 @@ export class ConversationService {
 
   /**
    * Retrieves every conversation in which the given user participates —
-   * either as the guest or as the staff member. Useful for Administrator
-   * "show me everything for this user" views, and ready to be reused for
-   * self-scoped `list-all` once per-role routing is enabled.
+   * either as the guest or as the staff member. Used by Administrator
+   * "show me everything for this user" views.
    *
    * @async
    * @param {number|string} userId - The user whose conversations to list.
@@ -316,6 +315,188 @@ export class ConversationService {
 
     } catch (err) {
       throw Boom.boomify(err, { message: 'Unable to find conversations for the user' });
+    }
+  }
+
+  /**
+   * Lists the caller's conversations. Staff also receive unclaimed Open
+   * conversations so they can take work from the support queue.
+   *
+   * @param {{ id: number|string, role: string }} user - Verified JWT claims.
+   * @returns {Promise<{ status: string, total: number, conversationsData: Object[] }>}
+   */
+  async listForChatUser(user) {
+    if (!user?.id || !['Guest', 'Staff'].includes(user.role)) {
+      throw Boom.forbidden('Only guests and staff may access the chat inbox');
+    }
+
+    try {
+      let where;
+      if (user.role === 'Guest') {
+        where = { guest: user.id };
+      } else {
+        const openStatus = await ConversationStatus.findOne({
+          where: { name: 'Open' },
+        });
+        if (!openStatus) {
+          throw Boom.internal('Conversation status "Open" is not configured');
+        }
+
+        where = {
+          [Op.or]: [
+            { staff: user.id },
+            { staff: null, status: openStatus.id },
+          ],
+        };
+      }
+
+      const conversations = await Conversation.findAll({
+        where,
+        order: [['id', 'ASC']],
+        include: ConversationService.CATALOG_INCLUDES,
+      });
+      const records = conversations.map(ConversationService._formatConversation);
+
+      return {
+        status: 'CONVERSATIONS FOUND SUCCESSFULLY',
+        total: records.length,
+        conversationsData: records,
+      };
+    } catch (err) {
+      if (Boom.isBoom(err)) throw err;
+      throw Boom.boomify(err, { message: 'Unable to find chat conversations' });
+    }
+  }
+
+  /**
+   * Opens one unassigned conversation for a guest. Locking the guest row
+   * serializes concurrent open requests so a guest cannot create duplicates.
+   *
+   * @param {{ id: number|string, role: string }} user - Verified JWT claims.
+   * @returns {Promise<{ status: string, conversationData: Object }>}
+   */
+  async openForGuest(user) {
+    if (!user?.id || user.role !== 'Guest') {
+      throw Boom.forbidden('Only guests may open a conversation');
+    }
+
+    try {
+      return await sequelize.transaction(async (transaction) => {
+        const guest = await User.findByPk(user.id, {
+          transaction,
+          lock: transaction.LOCK.UPDATE,
+        });
+        if (!guest) throw Boom.notFound('Guest user not found');
+
+        const [openStatus, closedStatus] = await Promise.all([
+          ConversationStatus.findOne({
+            where: { name: 'Open' },
+            transaction,
+          }),
+          ConversationStatus.findOne({
+            where: { name: 'Closed' },
+            transaction,
+          }),
+        ]);
+        if (!openStatus || !closedStatus) {
+          throw Boom.internal('Conversation statuses are not configured');
+        }
+
+        const activeConversation = await Conversation.findOne({
+          where: {
+            guest: user.id,
+            status: { [Op.ne]: closedStatus.id },
+          },
+          transaction,
+        });
+        if (activeConversation) {
+          throw Boom.conflict('You already have an active conversation');
+        }
+
+        const created = await Conversation.create(
+          {
+            guest: user.id,
+            staff: null,
+            status: openStatus.id,
+          },
+          { transaction },
+        );
+        const full = await Conversation.findByPk(created.id, {
+          include: ConversationService.CATALOG_INCLUDES,
+          transaction,
+        });
+
+        return {
+          status: 'CREATED SUCCESSFULLY',
+          conversationData: ConversationService._formatConversation(full),
+        };
+      });
+    } catch (err) {
+      if (Boom.isBoom(err)) throw err;
+      throw Boom.boomify(err, { message: 'Unable to open conversation' });
+    }
+  }
+
+  /**
+   * Claims an unassigned Open conversation for a staff member. The conditional
+   * update makes claiming atomic when multiple staff members race for it.
+   *
+   * @param {{ id: number|string, role: string }} user - Verified JWT claims.
+   * @param {number|string} conversationId - Conversation to claim.
+   * @returns {Promise<{ status: string, conversationData: Object }>}
+   */
+  async claimForStaff(user, conversationId) {
+    if (!user?.id || user.role !== 'Staff') {
+      throw Boom.forbidden('Only staff may claim a conversation');
+    }
+    if (!conversationId) {
+      throw Boom.badRequest('No conversation identifier provided');
+    }
+
+    try {
+      const openStatus = await ConversationStatus.findOne({
+        where: { name: 'Open' },
+      });
+      const assignedStatus = await ConversationStatus.findOne({
+        where: { name: 'Assigned' },
+      });
+      if (!openStatus || !assignedStatus) {
+        throw Boom.internal('Conversation statuses are not configured');
+      }
+
+      return await sequelize.transaction(async (transaction) => {
+        const [claimed] = await Conversation.update(
+          { staff: user.id, status: assignedStatus.id },
+          {
+            where: {
+              id: conversationId,
+              staff: null,
+              status: openStatus.id,
+            },
+            transaction,
+          },
+        );
+
+        if (!claimed) {
+          const existing = await Conversation.findByPk(conversationId, {
+            transaction,
+          });
+          if (!existing) throw Boom.notFound('Conversation not found');
+          throw Boom.conflict('This conversation is no longer available to claim');
+        }
+
+        const full = await Conversation.findByPk(conversationId, {
+          include: ConversationService.CATALOG_INCLUDES,
+          transaction,
+        });
+        return {
+          status: 'UPDATED SUCCESSFULLY',
+          conversationData: ConversationService._formatConversation(full),
+        };
+      });
+    } catch (err) {
+      if (Boom.isBoom(err)) throw err;
+      throw Boom.boomify(err, { message: 'Unable to claim conversation' });
     }
   }
 
