@@ -106,19 +106,19 @@ Client
 
 ### Layers
 
-| Layer                | Location                              | Responsibility                                                                           |
-| -------------------- | ------------------------------------- | ---------------------------------------------------------------------------------------- |
-| Routes               | `server/src/routes`                          | Declare endpoints and the middleware pipeline of each one.                               |
-| Middlewares          | `server/src/middlewares`                     | API key, JWT verification, role checks, validation, rate limiting, error handling.       |
-| Controllers          | `server/src/controllers`                     | Translate HTTP requests and responses; map service statuses to status codes.             |
-| GraphQL              | `server/src/graphql`                         | Schema, context builder (JWT verification and rotation), resolvers and helpers.          |
-| Sockets              | `server/src/sockets`                         | Socket.IO bootstrap, handshake authentication and chat events.                           |
-| Services             | `server/src/services`                        | Business rules and persistence. Single source of truth for every transport.              |
-| Schemas              | `server/src/schema`                          | Joi schemas, shared across REST, GraphQL and sockets.                                    |
-| RegEx                | `server/src/utils/RegEx`                     | Patterns that mirror column constraints, consumed by the Joi schemas.                    |
-| Models               | `server/src/db/models`                       | Sequelize models and the central association wiring in `index.js`.                       |
+| Layer                | Location                                            | Responsibility                                                                           |
+| -------------------- | --------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| Routes               | `server/src/routes`                                 | Declare endpoints and the middleware pipeline of each one.                               |
+| Middlewares          | `server/src/middlewares`                            | API key, JWT verification, role checks, validation, rate limiting, error handling.       |
+| Controllers          | `server/src/controllers`                            | Translate HTTP requests and responses; map service statuses to status codes.             |
+| GraphQL              | `server/src/graphql`                                | Schema, context builder (JWT verification and rotation), resolvers and helpers.          |
+| Sockets              | `server/src/sockets`                                | Socket.IO bootstrap, handshake authentication and chat events.                           |
+| Services             | `server/src/services`                               | Business rules and persistence. Single source of truth for every transport.              |
+| Schemas              | `server/src/schema`                                 | Joi schemas, shared across REST, GraphQL and sockets.                                    |
+| RegEx                | `server/src/utils/RegEx`                            | Patterns that mirror column constraints, consumed by the Joi schemas.                    |
+| Models               | `server/src/db/models`                              | Sequelize models and the central association wiring in `index.js`.                       |
 | Migrations / Seeders | `server/src/db/migrations`, `server/src/db/seeders` | Schema evolution and catalog data.                                                       |
-| Utilities            | `server/src/utils`                           | Password hashing, token signing and verification, message cipher, authorization helpers. |
+| Utilities            | `server/src/utils`                                  | Password hashing, token signing and verification, message cipher, authorization helpers. |
 
 ### Service result convention
 
@@ -138,7 +138,7 @@ or throw a Boom error. Each transport maps that outcome to its own response form
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/primetek-africa/hotel-booking-api.git
+git clone https://github.com/moses-25/hotel-booking-api.git
 cd hotel-booking-api
 
 # 2. Install backend dependencies
@@ -371,17 +371,17 @@ Because the caller is unauthenticated, identity is verified by requiring `email`
 
 ### Authorization matrix
 
-| Resource                               | Administrator                | Staff            | Guest            |
-| -------------------------------------- | ---------------------------- | ---------------- | ---------------- |
-| Users (all operations)                 | Yes                          | No               | No               |
-| Conversation statuses (all operations) | Yes                          | No               | No               |
-| Conversation administration            | Yes                          | No               | No               |
-| Chat inbox / queue / open / claim       | No                           | Own + queue / claim | Own / open       |
-| Create message                         | Participant or Administrator | Participant      | Participant      |
-| Read message / conversation messages   | Yes                          | Participant only | Participant only |
-| Delete message                         | Any message                  | Own messages     | Own messages     |
-| List messages by sender                | Any user                     | Own only         | Own only         |
-| GraphQL `me`                           | Yes                          | Yes              | Yes              |
+| Resource                               | Administrator                | Staff               | Guest            |
+| -------------------------------------- | ---------------------------- | ------------------- | ---------------- |
+| Users (all operations)                 | Yes                          | No                  | No               |
+| Conversation statuses (all operations) | Yes                          | No                  | No               |
+| Conversation administration            | Yes                          | No                  | No               |
+| Chat inbox / queue / open / claim      | No                           | Own + queue / claim | Own / open       |
+| Create message                         | Participant or Administrator | Participant         | Participant      |
+| Read message / conversation messages   | Yes                          | Participant only    | Participant only |
+| Delete message                         | Any message                  | Own messages        | Own messages     |
+| List messages by sender                | Any user                     | Own only            | Own only         |
+| GraphQL `me`                           | Yes                          | Yes                 | Yes              |
 
 A "participant" is the guest or the staff member assigned to the conversation. Administrators bypass participant checks for moderation.
 
@@ -520,11 +520,11 @@ User objects returned by read endpoints embed catalogs and never include the pas
 
 ### Chat inbox (Guest and Staff)
 
-| Method | Path                   | Body                       | Access |
-| ------ | ---------------------- | -------------------------- | ------ |
-| GET    | `/conversations/mine`  | none                       | Guest: own conversations; Staff: own assignments and open queue |
-| POST   | `/conversations/open`  | none                       | Guest |
-| POST   | `/conversations/claim` | `{ conversationId }`       | Staff |
+| Method | Path                   | Body                 | Access                                                          |
+| ------ | ---------------------- | -------------------- | --------------------------------------------------------------- |
+| GET    | `/conversations/mine`  | none                 | Guest: own conversations; Staff: own assignments and open queue |
+| POST   | `/conversations/open`  | none                 | Guest                                                           |
+| POST   | `/conversations/claim` | `{ conversationId }` | Staff                                                           |
 
 Conversation objects embed participants and status:
 
@@ -800,20 +800,20 @@ replica enforces the same budget. When running behind a reverse proxy, set
 
 Run these scripts from `server/`:
 
-| Script                                  | Description                                   |
-| --------------------------------------- | --------------------------------------------- |
-| `npm start`                             | Run the API with Node.                        |
-| `npm run dev`                           | Run the API with nodemon (auto-reload).       |
-| `npm run dev-dep`                       | Install dependencies and development tooling. |
+| Script                                  | Description                                      |
+| --------------------------------------- | ------------------------------------------------ |
+| `npm start`                             | Run the API with Node.                           |
+| `npm run dev`                           | Run the API with nodemon (auto-reload).          |
+| `npm run dev-dep`                       | Install dependencies and development tooling.    |
 | `npm run env-var`                       | Copy the backend environment template to `.env`. |
-| `npm run migrations:generate -- <name>` | Generate a new migration.                     |
-| `npm run migrations:run`                | Apply all pending migrations.                 |
-| `npm run migrations:revert`             | Revert the last migration.                    |
-| `npm run migrations:delete`             | Revert all migrations.                        |
-| `npm run seed:generate -- <name>`       | Generate a new seeder.                        |
-| `npm run seed:run`                      | Run all seeders.                              |
-| `npm run seed:revert`                   | Revert the last seeder.                       |
-| `npm run seed:delete`                   | Revert all seeders.                           |
+| `npm run migrations:generate -- <name>` | Generate a new migration.                        |
+| `npm run migrations:run`                | Apply all pending migrations.                    |
+| `npm run migrations:revert`             | Revert the last migration.                       |
+| `npm run migrations:delete`             | Revert all migrations.                           |
+| `npm run seed:generate -- <name>`       | Generate a new seeder.                           |
+| `npm run seed:run`                      | Run all seeders.                                 |
+| `npm run seed:revert`                   | Revert the last seeder.                          |
+| `npm run seed:delete`                   | Revert all seeders.                              |
 
 ## Testing with Postman
 
@@ -849,4 +849,4 @@ Define these collection or environment variables:
 
 Distributed under the MIT License. See [LICENSE](./LICENSE) for details.
 
-Author: Cristian Camilo
+Author: Moses Otieno
