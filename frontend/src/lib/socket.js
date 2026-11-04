@@ -1,0 +1,37 @@
+import { io } from "socket.io-client";
+import { API_ORIGIN, getToken } from "./api";
+
+let socket = null;
+
+// Lazy singleton: created the first time any component asks for it
+export function getSocket() {
+  if (!socket) {
+    socket = io(API_ORIGIN, {
+      // A function, so every (re)connection sends the latest token
+      auth: (cb) =>
+        cb({
+          token: getToken(),
+          apikey: import.meta.env.VITE_API_KEY,
+        }),
+    });
+  }
+  return socket;
+}
+
+export function disconnectSocket() {
+  socket?.disconnect();
+  socket = null;
+}
+
+// emit + ack as a Promise: resolves on { success: true }, rejects otherwise
+export function emitAsync(event, payload) {
+  return new Promise((resolve, reject) => {
+    getSocket()
+      .timeout(5000)
+      .emit(event, payload, (err, res) => {
+        if (err) return reject(new Error("The server did not respond."));
+        if (!res.success) return reject(new Error(res.message));
+        resolve(res);
+      });
+  });
+}
