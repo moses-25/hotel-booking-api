@@ -22,10 +22,12 @@ import {
   listOneConversation,
   listAllConversations,
   listByUserConversations,
-  openConversation,
-  listMyConversations,
-  claimConversation,
 } from "../controllers/conversation/index.js";
+import {
+  openChatConversation as openConversation,
+  listChatConversations as listMyConversations,
+  claimChatConversation as claimConversation,
+} from "../controllers/conversation/chat.js";
 
 // Create a new Router instance dedicated to the conversation resource
 const conversationRouter = Router();
