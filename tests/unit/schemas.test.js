@@ -13,8 +13,8 @@ const base = {
   firstLastName: "Bros",
   email: "mario.bros@nintendo.com",
   password: "pass1234",
-  role: 3,
-  status: 1,
+  role: "3",
+  status: "1",
   phones: ["34234323453", "23443556464"],
 };
 
@@ -54,9 +54,7 @@ describe("userSchema.newUserData", () => {
   });
 
   it("rejects missing required fields", () => {
-    expect(valid(userSchema.newUserData, { ...base, email: "a@b.com" })).toBe(
-      false,
-    );
+    expect(valid(userSchema.newUserData, { email: "a@b.com" })).toBe(false);
   });
 });
 
@@ -144,7 +142,10 @@ describe("conversationSchema", () => {
 
   it("updateData makes staffId optional", () => {
     expect(
-      valid(conversationSchema, { conversationId: "1", statusId: "2" }),
+      valid(conversationSchema.updateData, {
+        conversationId: "1",
+        statusId: "2",
+      }),
     ).toBe(true);
   });
 });
