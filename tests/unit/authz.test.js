@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import {
   assertConversationAccess,
   assertMessageDeletableBy,
-} from "../../src/utils/auth/authz.js";
+} from "../../server/src/utils/auth/authz.js";
 
 const conversation = { guest: 5, staff: 2 };
 const conversationWithoutStaff = { guest: 5, staff: null };
